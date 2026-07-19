@@ -1,0 +1,17 @@
+{
+  "name": "transitwarga",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@11.14.0",
+  "scripts": {
+    "lint": "pnpm -r lint",
+    "check": "pnpm -r check",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build",
+    "e2e": "pnpm --filter web build && playwright test",
+    "e2e:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}

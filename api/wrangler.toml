@@ -1,0 +1,21 @@
+name = "transitwarga-api"
+main = "src/index.ts"
+compatibility_date = "2025-10-01"
+
+# ID placeholder: wrangler dev memakai storage lokal (miniflare), ID asli
+# diisi saat deploy produksi (fase 7) lewat `wrangler kv namespace create`.
+kv_namespaces = [
+  { binding = "SUMMARY_CACHE", id = "summary-cache-placeholder" },
+  { binding = "QUOTA", id = "quota-placeholder" }
+]
+
+[[durable_objects.bindings]]
+name = "RATE_LIMITER"
+class_name = "RateLimiter"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["RateLimiter"]
+
+[dev]
+port = 8787

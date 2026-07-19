@@ -1,0 +1,185 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7745,
+          -6.2894
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-lebak-bulus",
+        "nama": "Lebak Bulus Grab",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7935,
+          -6.2925
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-fatmawati",
+        "nama": "Fatmawati Indomaret",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7972,
+          -6.2782
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-cipete-raya",
+        "nama": "Cipete Raya",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.798,
+          -6.2444
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-blok-m",
+        "nama": "Blok M BCA",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8025,
+          -6.2266
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-senayan",
+        "nama": "Senayan Mastercard",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8177,
+          -6.2149
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-bendungan-hilir",
+        "nama": "Bendungan Hilir",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8228,
+          -6.2008
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-dukuh-atas",
+        "nama": "Dukuh Atas BNI",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.823,
+          -6.1917
+        ]
+      },
+      "properties": {
+        "kawasan_id": "mrt-bundaran-hi",
+        "nama": "Bundaran HI Bank DKI",
+        "moda": "mrt"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8194,
+          -6.1665
+        ]
+      },
+      "properties": {
+        "kawasan_id": "tj-harmoni",
+        "nama": "Harmoni Central",
+        "moda": "tj"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8221,
+          -6.1969
+        ]
+      },
+      "properties": {
+        "kawasan_id": "tj-tosari",
+        "nama": "Tosari",
+        "moda": "tj"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.7997,
+          -6.2367
+        ]
+      },
+      "properties": {
+        "kawasan_id": "tj-csw",
+        "nama": "CSW",
+        "moda": "tj"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8071,
+          -6.2205
+        ]
+      },
+      "properties": {
+        "kawasan_id": "tj-gbk",
+        "nama": "Gelora Bung Karno",
+        "moda": "tj"
+      }
+    }
+  ]
+}

@@ -1,0 +1,82 @@
+# ============================================================================
+# Contoh konfigurasi LLM runtime (API Workers) — SALIN ke api/.dev.vars
+# (gitignored). File .example ini aman di-push: semua nilai placeholder.
+# Produksi memakai Workers Secrets, bukan file (lihat docs/deployment.md).
+#
+# Ganti provider = ganti 3-4 baris ini saja. Tanpa file ini, dev memakai
+# provider "mock" deterministik (tanpa key, cocok untuk test/E2E).
+# ============================================================================
+
+# --- Anthropic (Claude) -----------------------------------------------------
+LLM_PROVIDER=anthropic
+LLM_MODEL=claude-haiku-4-5
+LLM_API_KEY=sk-ant-xxxxxxxxxxxxxxxxx
+
+# --- OpenAI (ChatGPT/GPT) ---------------------------------------------------
+# LLM_PROVIDER=openai
+# LLM_MODEL=gpt-5-mini
+# LLM_API_KEY=sk-xxxxxxxxxxxxxxxxx
+
+# --- Google (Gemini) --------------------------------------------------------
+# Key AI Studio (AIza...) maupun key baru (AQ....) sama-sama jalan di provider
+# ini. Pakai alias gemini-flash-latest agar tidak kena pensiun versi model.
+# Catatan: endpoint OpenAI-compatible Google kurang andal utk structured
+# output — gunakan provider "google" (native), bukan openai-compatible.
+# LLM_PROVIDER=google
+# LLM_MODEL=gemini-flash-latest
+# LLM_API_KEY=AIzaXXXXXXXXXXXXXXXXX
+
+# --- Mistral ----------------------------------------------------------------
+# LLM_PROVIDER=mistral
+# LLM_MODEL=mistral-small-latest
+# LLM_API_KEY=xxxxxxxxxxxxxxxxx
+
+# --- Groq (Llama/Qwen super cepat) -----------------------------------------
+# LLM_PROVIDER=groq
+# LLM_MODEL=llama-3.3-70b-versatile
+# LLM_API_KEY=gsk_xxxxxxxxxxxxxxxxx
+
+# --- DeepSeek ---------------------------------------------------------------
+# LLM_PROVIDER=deepseek
+# LLM_MODEL=deepseek-chat
+# LLM_API_KEY=sk-xxxxxxxxxxxxxxxxx
+
+# --- xAI (Grok) -------------------------------------------------------------
+# LLM_PROVIDER=xai
+# LLM_MODEL=grok-3-mini
+# LLM_API_KEY=xai-xxxxxxxxxxxxxxxxx
+
+# --- Cohere -----------------------------------------------------------------
+# LLM_PROVIDER=cohere
+# LLM_MODEL=command-r-plus
+# LLM_API_KEY=xxxxxxxxxxxxxxxxx
+
+# --- Together AI (Llama/Qwen/Mixtral open-weight) ---------------------------
+# LLM_PROVIDER=togetherai
+# LLM_MODEL=meta-llama/Llama-3.3-70B-Instruct-Turbo
+# LLM_API_KEY=xxxxxxxxxxxxxxxxx
+
+# --- OpenRouter (SATU key utk ratusan model: Claude, GPT, Gemini, dll.) -----
+# LLM_PROVIDER=openrouter
+# LLM_MODEL=anthropic/claude-haiku-4.5
+# LLM_API_KEY=sk-or-xxxxxxxxxxxxxxxxx
+# # LLM_BASE_URL opsional (default https://openrouter.ai/api/v1)
+
+# --- Ollama / LM Studio / gateway internal (openai-compatible) --------------
+# LLM_PROVIDER=openai-compatible
+# LLM_MODEL=qwen3:14b
+# LLM_API_KEY=ollama
+# LLM_BASE_URL=http://localhost:11434/v1
+
+# --- Mock (tanpa key; CI, E2E, dev offline) ---------------------------------
+# LLM_PROVIDER=mock
+# LLM_MODEL=transitwarga-mock
+
+# ============================================================================
+# Konfigurasi lain (opsional)
+# ============================================================================
+TURNSTILE_DEV_BYPASS=1
+# TURNSTILE_SECRET_KEY=0x4AAAAAAAxxxxxxxxx   # produksi: via wrangler secret put
+# CORS_ORIGIN=https://transitwarga.vercel.app
+# DAILY_QUOTA=300
+# RATE_LIMIT_PER_MINUTE=10

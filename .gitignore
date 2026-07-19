@@ -1,0 +1,40 @@
+# dependencies
+node_modules/
+
+# secrets & env
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# OS
+.DS_Store
+
+# build output
+.svelte-kit/
+build/
+dist/
+.vercel/
+.wrangler/
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# artefak data (digenerate pipeline, tidak di-commit)
+*.pmtiles
+*.parquet
+pipeline/data/raw/
+pipeline/data/interim/
+pipeline/data/review/
+web/static/data/
+web/static/foto/
+
+# test & report
+coverage/
+playwright-report/
+test-results/
+.lighthouseci/

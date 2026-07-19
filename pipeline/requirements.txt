@@ -1,0 +1,10 @@
+geopandas>=1.0
+shapely>=2.0
+pandas>=2.2
+pyarrow>=17.0
+duckdb>=1.1
+litellm>=1.60
+pillow>=10.0
+pytest>=8.0
+ruff>=0.8
+psycopg[binary]>=3.1

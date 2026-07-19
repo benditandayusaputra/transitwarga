@@ -1,0 +1,261 @@
+{
+ "data_version": "2026-07-19",
+ "kawasan": [
+  {
+   "kawasan_id": "mrt-lebak-bulus",
+   "nama": "Lebak Bulus Grab",
+   "moda": "mrt",
+   "lat": -6.2894,
+   "lon": 106.7745,
+   "tipologi": "padat_friksi",
+   "n_usaha_400": 4,
+   "n_usaha_800": 6,
+   "harga_median": 12500,
+   "pct_digital": 20,
+   "skor_kepadatan": 100.0,
+   "skor_keramaian": 75.0,
+   "skor_digital": 20.0,
+   "skor_friksi": 79.2,
+   "top_jenis": [
+    "kaki_lima",
+    "fast_food",
+    "restoran"
+   ],
+   "n_transaksi": 5
+  },
+  {
+   "kawasan_id": "mrt-fatmawati",
+   "nama": "Fatmawati Indomaret",
+   "moda": "mrt",
+   "lat": -6.2925,
+   "lon": 106.7935,
+   "tipologi": "potensi",
+   "n_usaha_400": 2,
+   "n_usaha_800": 5,
+   "harga_median": 15000,
+   "pct_digital": 50,
+   "skor_kepadatan": 33.3,
+   "skor_keramaian": 70.0,
+   "skor_digital": 50.0,
+   "skor_friksi": 31.7,
+   "top_jenis": [
+    "kaki_lima",
+    "warung_tenda"
+   ],
+   "n_transaksi": 2
+  },
+  {
+   "kawasan_id": "mrt-cipete-raya",
+   "nama": "Cipete Raya",
+   "moda": "mrt",
+   "lat": -6.2782,
+   "lon": 106.7972,
+   "tipologi": "sepi",
+   "n_usaha_400": 1,
+   "n_usaha_800": 2,
+   "harga_median": 40000,
+   "pct_digital": 50,
+   "skor_kepadatan": 0.0,
+   "skor_keramaian": 75.0,
+   "skor_digital": 50.0,
+   "skor_friksi": 0.0,
+   "top_jenis": [
+    "fast_food",
+    "restoran"
+   ],
+   "n_transaksi": 4
+  },
+  {
+   "kawasan_id": "mrt-blok-m",
+   "nama": "Blok M BCA",
+   "moda": "mrt",
+   "lat": -6.2444,
+   "lon": 106.798,
+   "tipologi": "potensi",
+   "n_usaha_400": 2,
+   "n_usaha_800": 4,
+   "harga_median": 35000,
+   "pct_digital": 50,
+   "skor_kepadatan": 33.3,
+   "skor_keramaian": 50.0,
+   "skor_digital": 50.0,
+   "skor_friksi": 47.9,
+   "top_jenis": [
+    "kaki_lima",
+    "restoran",
+    "warung_tenda"
+   ],
+   "n_transaksi": 4
+  },
+  {
+   "kawasan_id": "mrt-senayan",
+   "nama": "Senayan Mastercard",
+   "moda": "mrt",
+   "lat": -6.2266,
+   "lon": 106.8025,
+   "tipologi": "potensi",
+   "n_usaha_400": 2,
+   "n_usaha_800": 2,
+   "harga_median": 30000,
+   "pct_digital": 100,
+   "skor_kepadatan": 33.3,
+   "skor_keramaian": 75.0,
+   "skor_digital": 100.0,
+   "skor_friksi": 41.7,
+   "top_jenis": [
+    "warung_tenda",
+    "gerobak"
+   ],
+   "n_transaksi": 1
+  },
+  {
+   "kawasan_id": "mrt-bendungan-hilir",
+   "nama": "Bendungan Hilir",
+   "moda": "mrt",
+   "lat": -6.2149,
+   "lon": 106.8177,
+   "tipologi": "potensi",
+   "n_usaha_400": 2,
+   "n_usaha_800": 2,
+   "harga_median": 10000,
+   "pct_digital": 67,
+   "skor_kepadatan": 33.3,
+   "skor_keramaian": 25.0,
+   "skor_digital": 66.7,
+   "skor_friksi": 54.2,
+   "top_jenis": [
+    "kafe",
+    "restoran"
+   ],
+   "n_transaksi": 3
+  },
+  {
+   "kawasan_id": "mrt-dukuh-atas",
+   "nama": "Dukuh Atas BNI",
+   "moda": "mrt",
+   "lat": -6.2008,
+   "lon": 106.8228,
+   "tipologi": "sepi",
+   "n_usaha_400": 1,
+   "n_usaha_800": 2,
+   "harga_median": 22500,
+   "pct_digital": 40,
+   "skor_kepadatan": 0.0,
+   "skor_keramaian": 75.0,
+   "skor_digital": 40.0,
+   "skor_friksi": 12.5,
+   "top_jenis": [
+    "kaki_lima",
+    "gerobak"
+   ],
+   "n_transaksi": 5
+  },
+  {
+   "kawasan_id": "mrt-bundaran-hi",
+   "nama": "Bundaran HI Bank DKI",
+   "moda": "mrt",
+   "lat": -6.1917,
+   "lon": 106.823,
+   "tipologi": "padat_friksi",
+   "n_usaha_400": 3,
+   "n_usaha_800": 4,
+   "harga_median": 15000,
+   "pct_digital": 33,
+   "skor_kepadatan": 66.7,
+   "skor_keramaian": 50.0,
+   "skor_digital": 33.3,
+   "skor_friksi": 77.1,
+   "top_jenis": [
+    "kaki_lima",
+    "restoran",
+    "gerobak"
+   ],
+   "n_transaksi": 3
+  },
+  {
+   "kawasan_id": "tj-harmoni",
+   "nama": "Harmoni Central",
+   "moda": "tj",
+   "lat": -6.1665,
+   "lon": 106.8194,
+   "tipologi": "potensi",
+   "n_usaha_400": 2,
+   "n_usaha_800": 3,
+   "harga_median": 12000,
+   "pct_digital": 75,
+   "skor_kepadatan": 33.3,
+   "skor_keramaian": 66.7,
+   "skor_digital": 75.0,
+   "skor_friksi": 41.7,
+   "top_jenis": [
+    "restoran",
+    "kaki_lima"
+   ],
+   "n_transaksi": 4
+  },
+  {
+   "kawasan_id": "tj-tosari",
+   "nama": "Tosari",
+   "moda": "tj",
+   "lat": -6.1969,
+   "lon": 106.8221,
+   "tipologi": "potensi",
+   "n_usaha_400": 2,
+   "n_usaha_800": 3,
+   "harga_median": 45000,
+   "pct_digital": 0,
+   "skor_kepadatan": 33.3,
+   "skor_keramaian": 83.3,
+   "skor_digital": 0.0,
+   "skor_friksi": 41.7,
+   "top_jenis": [
+    "fast_food",
+    "kaki_lima"
+   ],
+   "n_transaksi": 3
+  },
+  {
+   "kawasan_id": "tj-csw",
+   "nama": "CSW",
+   "moda": "tj",
+   "lat": -6.2367,
+   "lon": 106.7997,
+   "tipologi": "padat_friksi",
+   "n_usaha_400": 3,
+   "n_usaha_800": 5,
+   "harga_median": 12000,
+   "pct_digital": 50,
+   "skor_kepadatan": 66.7,
+   "skor_keramaian": 60.0,
+   "skor_digital": 50.0,
+   "skor_friksi": 63.3,
+   "top_jenis": [
+    "kaki_lima",
+    "gerobak",
+    "restoran"
+   ],
+   "n_transaksi": 2
+  },
+  {
+   "kawasan_id": "tj-gbk",
+   "nama": "Gelora Bung Karno",
+   "moda": "tj",
+   "lat": -6.2205,
+   "lon": 106.8071,
+   "tipologi": "sepi",
+   "n_usaha_400": 1,
+   "n_usaha_800": 2,
+   "harga_median": 22500,
+   "pct_digital": 100,
+   "skor_kepadatan": 0.0,
+   "skor_keramaian": 75.0,
+   "skor_digital": 100.0,
+   "skor_friksi": 25.0,
+   "top_jenis": [
+    "restoran",
+    "warung_tenda"
+   ],
+   "n_transaksi": 4
+  }
+ ]
+}

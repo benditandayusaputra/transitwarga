@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>Reset Service Worker — TransitWarga</title>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+				display: grid;
+				place-items: center;
+				min-height: 100dvh;
+				margin: 0;
+				background: #f8fafc;
+				color: #0f172a;
+			}
+		</style>
+	</head>
+	<body>
+		<p id="status">Membersihkan service worker &amp; cache origin ini…</p>
+		<script>
+			// Halaman penyelamat: TransitWarga tidak memakai service worker, tetapi SW
+			// nyasar dari proyek lain di origin yang sama bisa merusak range request
+			// PMTiles (cache.put menolak 206) sampai aplikasi gagal termuat. Halaman
+			// statis ini tetap bisa dilayani SW mana pun, lalu membersihkannya.
+			(async () => {
+				const s = document.getElementById('status');
+				try {
+					if ('serviceWorker' in navigator) {
+						const regs = await navigator.serviceWorker.getRegistrations();
+						await Promise.all(regs.map((r) => r.unregister()));
+					}
+					if (window.caches) {
+						const keys = await caches.keys();
+						await Promise.all(keys.map((k) => caches.delete(k)));
+					}
+					s.textContent = 'Bersih. Membuka peta…';
+				} catch (e) {
+					s.textContent =
+						'Sebagian gagal dibersihkan (' +
+						e +
+						') — gunakan DevTools → Application → Clear site data.';
+				}
+				setTimeout(() => location.replace('/peta'), 800);
+			})();
+		</script>
+	</body>
+</html>
