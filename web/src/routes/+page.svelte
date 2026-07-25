@@ -1,3 +1,28 @@
+<script lang="ts">
+	import AngkaNaik from '$lib/components/AngkaNaik.svelte';
+	import { loadAgregat } from '$lib/data/agregat';
+	import { formatAngka, formatPersen } from '$lib/utils/format';
+	import type { AgregatPayload } from '$lib/types';
+
+	let agregat = $state<AgregatPayload | null>(null);
+	$effect(() => {
+		loadAgregat()
+			.then((a) => (agregat = a))
+			.catch(() => (agregat = null));
+	});
+
+	const insight = $derived.by(() => {
+		if (!agregat || agregat.kawasan.length === 0) return null;
+		const ks = agregat.kawasan;
+		return {
+			kawasan: ks.length,
+			totalUsaha: ks.reduce((a, k) => a + k.n_usaha_800, 0),
+			rataDigital: ks.reduce((a, k) => a + k.pct_digital, 0) / ks.length,
+			perluPenataan: ks.filter((k) => k.tipologi === 'padat_friksi').length
+		};
+	});
+</script>
+
 <svelte:head>
 	<title>TransitWarga — Ekonomi Informal di Ekosistem Transit Jakarta</title>
 	<meta
@@ -6,35 +31,74 @@
 	/>
 </svelte:head>
 
-<section class="bg-linear-to-b from-primary-50 to-white">
+<section class="hero-pola">
 	<div class="mx-auto max-w-6xl px-4 py-16 md:py-24">
-		<p class="text-sm font-semibold tracking-wide text-primary-700 uppercase">
+		<p class="anim-masuk text-primary-700 text-sm font-semibold tracking-wide uppercase">
 			MAPID WebGIS Competition 2026 · Maps That Think!
 		</p>
-		<h1 class="mt-3 max-w-3xl text-4xl font-bold text-slate-900 md:text-5xl">
+		<h1
+			class="anim-masuk mt-3 max-w-3xl text-4xl font-bold tracking-tight text-slate-900 md:text-5xl"
+		>
 			Warung kecil menghidupkan stasiun. Data membantu menatanya.
 		</h1>
-		<p class="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
+		<p class="anim-masuk-lambat mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
 			TransitWarga memetakan ekonomi informal - kaki lima, gerobak, warung tenda - di sekitar
 			stasiun MRT dan halte TransJakarta, lalu menghubungkannya dengan pengalaman
 			<em>first/last mile</em> penumpang. Hasilnya: tipologi kawasan dan rekomendasi kebijakan yang bisa
 			langsung ditindaklanjuti.
 		</p>
-		<div class="mt-8 flex flex-wrap gap-3">
+		<div class="anim-masuk-lambat mt-8 flex flex-wrap gap-3">
 			<a
 				href="/peta"
-				class="rounded-lg bg-primary-700 px-6 py-3 font-semibold text-white hover:bg-primary-800"
+				class="from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 shadow-primary-600/25 rounded-xl bg-linear-to-r px-6 py-3 font-semibold text-white shadow-lg transition-shadow hover:shadow-xl"
 				data-testid="cta-peta"
 			>
 				Jelajahi Peta
 			</a>
 			<a
 				href="/analisis"
-				class="rounded-lg border border-primary-700 px-6 py-3 font-semibold text-primary-700 hover:bg-primary-50"
+				class="border-primary-200 text-primary-700 hover:border-primary-600 hover:bg-primary-50 rounded-xl border bg-white/70 px-6 py-3 font-semibold transition-colors"
 			>
 				Lihat Analisis
 			</a>
 		</div>
+
+		<!-- Insight langsung dari data terolah (tinggi tetap: tanpa layout shift) -->
+		<dl class="mt-12 grid min-h-20 grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-4" aria-live="polite">
+			{#if insight}
+				<div>
+					<dt class="text-xs text-slate-500">Kawasan dianalisis</dt>
+					<dd class="text-primary-800 mt-0.5 text-2xl font-bold">
+						<AngkaNaik nilai={insight.kawasan} format={formatAngka} />
+					</dd>
+				</div>
+				<div>
+					<dt class="text-xs text-slate-500">Titik usaha terpetakan</dt>
+					<dd class="text-primary-800 mt-0.5 text-2xl font-bold">
+						<AngkaNaik nilai={insight.totalUsaha} format={formatAngka} />
+					</dd>
+				</div>
+				<div>
+					<dt class="text-xs text-slate-500">Rata-rata transaksi digital</dt>
+					<dd class="text-primary-800 mt-0.5 text-2xl font-bold">
+						<AngkaNaik nilai={insight.rataDigital} format={formatPersen} />
+					</dd>
+				</div>
+				<div>
+					<dt class="text-xs text-slate-500">Kawasan perlu penataan</dt>
+					<dd class="text-primary-800 mt-0.5 text-2xl font-bold">
+						<AngkaNaik nilai={insight.perluPenataan} format={formatAngka} />
+					</dd>
+				</div>
+			{:else}
+				{#each [0, 1, 2, 3] as i (i)}
+					<div>
+						<div class="shimmer h-3 w-24 rounded-full"></div>
+						<div class="shimmer mt-2 h-7 w-14 rounded-lg"></div>
+					</div>
+				{/each}
+			{/if}
+		</dl>
 	</div>
 </section>
 

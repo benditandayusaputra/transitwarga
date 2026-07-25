@@ -54,8 +54,9 @@
 		content="Peta interaktif ekonomi informal di sekitar stasiun MRT dan halte TransJakarta"
 	/>
 	<!-- Percepat request tile basemap pertama (LCP) -->
-	<link rel="preconnect" href="https://tile.openstreetmap.org" />
-	<link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin="" />
+	<link rel="preconnect" href="https://a.basemaps.cartocdn.com" crossorigin="" />
+	<link rel="preconnect" href="https://b.basemaps.cartocdn.com" crossorigin="" />
+	<link rel="dns-prefetch" href="https://a.basemaps.cartocdn.com" />
 	<link rel="dns-prefetch" href="https://tile.openstreetmap.org" />
 </svelte:head>
 

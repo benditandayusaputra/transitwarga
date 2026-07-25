@@ -3,6 +3,7 @@
 	import { loadAgregat } from '$lib/data/agregat';
 	import { JENIS_LABELS, MODA_LABELS } from '$lib/map/layers';
 	import { mapStore } from '$lib/stores/map.svelte';
+	import { masukPanel } from '$lib/utils/motion';
 	import type { AgregatKawasan } from '$lib/types';
 	import Icon from './Icon.svelte';
 
@@ -109,7 +110,8 @@
 	/>
 	{#if terbuka && hasil.length > 0}
 		<ul
-			class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg"
+			class="absolute top-full right-0 left-0 z-20 mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+			transition:masukPanel
 			data-testid="search-results"
 		>
 			{#each hasil as r (r.key)}

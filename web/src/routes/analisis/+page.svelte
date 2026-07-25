@@ -1,9 +1,11 @@
 <script lang="ts">
+	import AngkaNaik from '$lib/components/AngkaNaik.svelte';
 	import BarChartSimple from '$lib/components/BarChartSimple.svelte';
 	import ChartCard from '$lib/components/ChartCard.svelte';
 	import CompareView from '$lib/components/CompareView.svelte';
+	import DonutChart from '$lib/components/DonutChart.svelte';
 	import HistogramChart from '$lib/components/HistogramChart.svelte';
-	import StackedBar from '$lib/components/StackedBar.svelte';
+	import RankingChart from '$lib/components/RankingChart.svelte';
 	import { loadAgregat } from '$lib/data/agregat';
 	import {
 		distribusiJenis,
@@ -20,17 +22,26 @@
 	import type { AgregatPayload } from '$lib/types';
 
 	const METODE_COLORS: Record<string, string> = {
-		tunai: '#999999',
-		qris: '#0072B2',
+		tunai: '#94a3b8',
+		qris: '#2563eb',
 		debit: '#56B4E9',
 		kredit: '#CC79A7',
 		ewallet: '#009E73'
 	};
 
+	const METRIK_RANKING = [
+		{ id: 'skor_kepadatan', label: 'Kepadatan' },
+		{ id: 'skor_keramaian', label: 'Keramaian' },
+		{ id: 'skor_digital', label: 'Digitalisasi' },
+		{ id: 'skor_friksi', label: 'Friksi' }
+	] as const;
+	type MetrikId = (typeof METRIK_RANKING)[number]['id'];
+
 	let agregat = $state<AgregatPayload | null>(null);
 	let kawasanId = $state('');
 	let dbGagal = $state(false);
 	let memuat = $state(false);
+	let metrikRanking = $state<MetrikId>('skor_kepadatan');
 
 	let indikator = $state<IndikatorKawasan | null>(null);
 	let jenis = $state<DistribusiJenis[]>([]);
@@ -82,19 +93,34 @@
 			.finally(() => (memuat = false));
 	});
 
-	const kawasanAktifNama = $derived(
-		agregat?.kawasan.find((k) => k.kawasan_id === kawasanId)?.nama ?? kawasanId
-	);
-
 	const kartu = $derived(
 		indikator
 			? [
-					{ label: 'Usaha informal (≤800 m)', nilai: formatAngka(indikator.nUsaha) },
-					{ label: 'Harga median per porsi', nilai: formatRupiah(indikator.hargaMedian) },
-					{ label: 'Transaksi non-tunai', nilai: formatPersen(indikator.pctDigital) },
-					{ label: 'Jumlah transaksi tercatat', nilai: formatAngka(indikator.nTransaksi) }
+					{ label: 'Usaha informal (≤800 m)', nilai: indikator.nUsaha, format: formatAngka },
+					{ label: 'Harga median per porsi', nilai: indikator.hargaMedian, format: formatRupiah },
+					{ label: 'Transaksi non-tunai', nilai: indikator.pctDigital, format: formatPersen },
+					{ label: 'Jumlah transaksi tercatat', nilai: indikator.nTransaksi, format: formatAngka }
 				]
 			: []
+	);
+
+	const pctDigitalAktif = $derived(
+		metode.length > 0
+			? Math.round(
+					(metode.filter((m) => m.digital).reduce((a, m) => a + m.n, 0) /
+						metode.reduce((a, m) => a + m.n, 0)) *
+						100
+				)
+			: null
+	);
+
+	const dataRanking = $derived(
+		(agregat?.kawasan ?? []).map((k) => ({
+			id: k.kawasan_id,
+			nama: k.nama,
+			nilai: k[metrikRanking],
+			tipologi: k.tipologi
+		}))
 	);
 </script>
 
@@ -107,11 +133,13 @@
 </svelte:head>
 
 <div class="mx-auto max-w-6xl px-4 py-8">
-	<h1 class="text-2xl font-bold text-slate-900">Analisis Kawasan</h1>
-	<!-- <p class="mt-1 text-sm text-slate-500">
-		Analitik berjalan langsung di browser Anda (DuckDB-WASM di atas file Parquet statis) — tanpa
-		server analitik.
-	</p> -->
+	<div class="anim-masuk">
+		<h1 class="text-2xl font-bold tracking-tight text-slate-900">Analisis Kawasan</h1>
+		<p class="mt-1 text-sm text-slate-500">
+			Analitik berjalan langsung di browser Anda (DuckDB-WASM di atas file Parquet statis) — tanpa
+			server analitik.
+		</p>
+	</div>
 
 	{#if dbGagal}
 		<p
@@ -126,7 +154,7 @@
 	<label class="mt-6 block max-w-sm text-xs font-semibold text-slate-500 uppercase">
 		Pilih kawasan
 		<select
-			class="mt-1 w-full rounded-md border border-slate-300 p-2 text-sm font-normal text-slate-800"
+			class="focus-visible:ring-primary-600 mt-1 w-full rounded-lg border border-slate-300 p-2 text-sm font-normal text-slate-800 focus-visible:ring-2 focus-visible:outline-none"
 			bind:value={kawasanId}
 			data-testid="pilih-kawasan"
 		>
@@ -137,21 +165,32 @@
 	</label>
 
 	{#if memuat}
-		<p class="mt-6 text-sm text-slate-400">Memuat analitik…</p>
+		<div class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4" aria-live="polite">
+			{#each [0, 1, 2, 3] as i (i)}
+				<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+					<div class="shimmer h-3 w-2/3 rounded-full"></div>
+					<div class="shimmer mt-2.5 h-6 w-1/2 rounded-lg"></div>
+				</div>
+			{/each}
+		</div>
 	{:else if indikator}
-		<h2 class="sr-only">Indikator {kawasanAktifNama}</h2>
-		<dl class="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4" data-testid="indikator-kawasan">
+		<dl
+			class="anim-masuk mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4"
+			data-testid="indikator-kawasan"
+		>
 			{#each kartu as item (item.label)}
 				<div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
 					<dt class="text-xs text-slate-500">{item.label}</dt>
-					<dd class="mt-1 text-xl font-bold text-slate-900">{item.nilai}</dd>
+					<dd class="mt-1 text-xl font-bold text-slate-900">
+						<AngkaNaik nilai={item.nilai} format={item.format} />
+					</dd>
 				</div>
 			{/each}
 		</dl>
 	{/if}
 
 	{#if !dbGagal}
-		<div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
+		<div class="anim-masuk-lambat mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
 			<ChartCard title="Distribusi jenis tempat">
 				<BarChartSimple
 					items={jenis.map((j) => ({
@@ -167,18 +206,38 @@
 				/>
 			</ChartCard>
 			<ChartCard title="Metode bayar: tunai vs digital">
-				<StackedBar
-					segments={metode.map((m) => ({
-						label: m.metode === 'tunai' ? 'Tunai' : `${m.metode.toUpperCase()} (digital)`,
+				<DonutChart
+					irisan={metode.map((m) => ({
+						label: m.metode === 'tunai' ? 'Tunai' : m.metode.toUpperCase(),
 						value: m.n,
 						color: METODE_COLORS[m.metode] ?? '#94a3b8'
 					}))}
+					tengah={pctDigitalAktif !== null ? `${pctDigitalAktif}% digital` : ''}
 				/>
 			</ChartCard>
 		</div>
 	{/if}
 
-	<div class="mt-6">
+	<!-- Peringkat antar kawasan dari statistik pra-hitung: tetap hidup walau
+	     DuckDB gagal, dan klik baris memindahkan kawasan terpilih -->
+	<div class="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
+		<ChartCard title="Peringkat kawasan">
+			<div class="mb-2.5 flex flex-wrap gap-1.5" role="group" aria-label="Pilih metrik peringkat">
+				{#each METRIK_RANKING as m (m.id)}
+					<button
+						type="button"
+						class={metrikRanking === m.id
+							? 'bg-primary-700 rounded-full px-2.5 py-1 text-xs font-semibold text-white'
+							: 'hover:border-primary-600 hover:text-primary-700 rounded-full border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors'}
+						aria-pressed={metrikRanking === m.id}
+						onclick={() => (metrikRanking = m.id)}
+					>
+						{m.label}
+					</button>
+				{/each}
+			</div>
+			<RankingChart data={dataRanking} aktifId={kawasanId} onPilih={(id) => (kawasanId = id)} />
+		</ChartCard>
 		<CompareView {agregat} {dbGagal} />
 	</div>
 </div>

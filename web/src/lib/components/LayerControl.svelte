@@ -13,6 +13,7 @@
 
 	const basemaps = daftarBasemap();
 	const BASEMAP_META: Record<BasemapPilihan, { label: string; icon: IconName }> = {
+		terang: { label: 'Terang', icon: 'terang' },
 		jalan: { label: 'Jalan', icon: 'jalan' },
 		satelit: { label: 'Satelit', icon: 'satelit' },
 		mapid: { label: 'MAPID', icon: 'layer' }

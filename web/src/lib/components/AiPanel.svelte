@@ -86,9 +86,18 @@
 	<h3 class="text-xs font-semibold text-slate-500 uppercase">Ringkasan AI</h3>
 
 	{#if memuatSummary}
-		<p class="mt-1.5 text-xs text-slate-400" data-testid="ai-summary-loading">
-			Menyusun ringkasan…
-		</p>
+		<!-- Skeleton shimmer: AI sedang menyusun narasi dari data kawasan -->
+		<div class="mt-2 space-y-1.5" data-testid="ai-summary-loading" aria-live="polite">
+			<div class="shimmer h-3 w-full rounded-full"></div>
+			<div class="shimmer h-3 w-11/12 rounded-full"></div>
+			<div class="shimmer h-3 w-4/6 rounded-full"></div>
+			<p class="text-primary-700 flex items-center gap-1.5 pt-0.5 text-xs">
+				<span class="titik-berpikir inline-flex gap-0.5"
+					><span></span><span></span><span></span></span
+				>
+				Menganalisis data kawasan…
+			</p>
+		</div>
 	{:else if summary}
 		<!-- Narasi AI selalu teks murni — tanpa {@html} (aturan keamanan). -->
 		<p class="mt-1.5 text-sm leading-relaxed text-slate-700" data-testid="ai-summary">
@@ -125,13 +134,30 @@
 			</li>
 		{/each}
 		{#if chatStore.streamingText !== null}
-			<li
-				class="mr-6 rounded-lg bg-slate-100 p-2 text-sm text-slate-800"
-				data-role="assistant"
-				data-testid="chat-streaming"
-			>
-				{chatStore.streamingText}<span class="animate-pulse">▍</span>
-			</li>
+			{#if chatStore.streamingText === ''}
+				<!-- AI sedang berpikir: belum ada delta pertama -->
+				<li
+					class="text-primary-700 mr-6 flex w-fit items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5 text-sm"
+					data-role="assistant"
+					data-testid="chat-berpikir"
+					aria-label="Asisten sedang menganalisis"
+				>
+					<span class="titik-berpikir inline-flex gap-1"
+						><span></span><span></span><span></span></span
+					>
+					<span class="text-xs text-slate-500">menganalisis…</span>
+				</li>
+			{:else}
+				<li
+					class="mr-6 rounded-lg bg-slate-100 p-2 text-sm text-slate-800"
+					data-role="assistant"
+					data-testid="chat-streaming"
+				>
+					{chatStore.streamingText}<span
+						class="bg-primary-600 ml-0.5 inline-block h-3.5 w-0.75 animate-pulse rounded-full align-middle"
+					></span>
+				</li>
+			{/if}
 		{/if}
 	</ul>
 	{#if chatStore.error}

@@ -1,3 +1,7 @@
+<script lang="ts">
+	import GaleriSurvey from '$lib/components/GaleriSurvey.svelte';
+</script>
+
 <svelte:head>
 	<title>Survey — TransitWarga</title>
 	<meta
@@ -7,7 +11,9 @@
 </svelte:head>
 
 <div class="mx-auto max-w-4xl px-4 py-10">
-	<h1 class="text-3xl font-bold text-slate-900">Dokumentasi Survey Lapangan</h1>
+	<h1 class="anim-masuk text-3xl font-bold tracking-tight text-slate-900">
+		Dokumentasi Survey Lapangan
+	</h1>
 	<!-- <p
 		class="mt-4 rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800"
 		data-testid="survey-status"
@@ -71,4 +77,6 @@
 			perubahan kode.
 		</p>
 	</section>
+
+	<GaleriSurvey />
 </div>

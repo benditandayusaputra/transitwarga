@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import { masukPanel } from '$lib/utils/motion';
 	import Icon, { type IconName } from './Icon.svelte';
 
 	let {
@@ -21,6 +22,7 @@
 	class="w-72 max-w-[calc(100vw-5.5rem)] overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 shadow-lg backdrop-blur-sm"
 	aria-label={judul}
 	data-testid={testid}
+	transition:masukPanel
 >
 	<header class="flex items-center gap-2 border-b border-slate-100 px-3.5 py-2.5">
 		<span class="text-primary-700"><Icon name={icon} size={16} /></span>

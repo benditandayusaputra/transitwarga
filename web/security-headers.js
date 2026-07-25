@@ -8,6 +8,7 @@
  */
 
 export const BASEMAP_ORIGINS = [
+	'https://*.basemaps.cartocdn.com',
 	'https://tile.openstreetmap.org',
 	'https://server.arcgisonline.com',
 	'https://demotiles.maplibre.org',

@@ -107,7 +107,9 @@
 
 	function applyHighlight(m: maplibregl.Map) {
 		const ids = [...new Set([...mapStore.highlight, mapStore.kawasanAktif ?? ''])].filter(Boolean);
-		m.setFilter(LAYER_IDS.highlight, highlightFilterExpression(ids));
+		const expr = highlightFilterExpression(ids);
+		m.setFilter(LAYER_IDS.highlight, expr);
+		m.setFilter(LAYER_IDS.highlightGlow, expr);
 	}
 
 	function applyVisibility(m: maplibregl.Map) {

@@ -20,7 +20,8 @@
 		| 'chevron-bawah'
 		| 'chevron-atas'
 		| 'perbesar'
-		| 'perkecil';
+		| 'perkecil'
+		| 'terang';
 
 	let { name, size = 18 }: { name: IconName; size?: number } = $props();
 
@@ -48,7 +49,9 @@
 		'chevron-bawah': 'M6 9.5l6 6 6-6',
 		'chevron-atas': 'M6 14.5l6-6 6 6',
 		perbesar: 'M9 4H4v5 M15 4h5v5 M9 20H4v-5 M15 20h5v-5',
-		perkecil: 'M4 9h5V4 M20 9h-5V4 M4 15h5v5 M20 15h-5v5'
+		perkecil: 'M4 9h5V4 M20 9h-5V4 M4 15h5v5 M20 15h-5v5',
+		terang:
+			'M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z M12 2.5v2.2 M12 19.3v2.2 M2.5 12h2.2 M19.3 12h2.2 M5.3 5.3l1.5 1.5 M17.2 17.2l1.5 1.5 M18.7 5.3l-1.5 1.5 M6.8 17.2l-1.5 1.5'
 	};
 </script>
 

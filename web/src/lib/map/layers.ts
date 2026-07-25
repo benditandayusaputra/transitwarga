@@ -76,6 +76,7 @@ export function colorMatchExpression(
 export const LAYER_IDS = {
 	bufferFill: 'kawasan-buffer-fill',
 	bufferLine: 'kawasan-buffer-line',
+	highlightGlow: 'kawasan-highlight-glow',
 	highlight: 'kawasan-highlight',
 	usaha: 'usaha-icon',
 	usahaLabel: 'usaha-label',
@@ -94,7 +95,12 @@ export const USAHA_MINZOOM = 10;
 
 /** Grup layer untuk layer control. */
 export const LAYER_GROUPS = {
-	kawasan_buffer: [LAYER_IDS.bufferFill, LAYER_IDS.bufferLine, LAYER_IDS.highlight],
+	kawasan_buffer: [
+		LAYER_IDS.bufferFill,
+		LAYER_IDS.bufferLine,
+		LAYER_IDS.highlightGlow,
+		LAYER_IDS.highlight
+	],
 	usaha: [LAYER_IDS.usaha, LAYER_IDS.usahaLabel],
 	transit: [LAYER_IDS.transit, LAYER_IDS.transitLabel]
 } as const;
@@ -131,6 +137,20 @@ export function projectLayers(): LayerSpecification[] {
 				'line-opacity': 0.6
 			}
 		},
+		// Glow lembut di bawah garis highlight (kesan fokus tanpa berlebihan)
+		{
+			id: LAYER_IDS.highlightGlow,
+			type: 'line',
+			source: SOURCE_ID,
+			'source-layer': 'kawasan_buffer',
+			filter: ['boolean', false],
+			paint: {
+				'line-color': '#2563eb',
+				'line-width': 11,
+				'line-blur': 8,
+				'line-opacity': 0.45
+			}
+		},
 		{
 			id: LAYER_IDS.highlight,
 			type: 'line',
@@ -138,8 +158,8 @@ export function projectLayers(): LayerSpecification[] {
 			'source-layer': 'kawasan_buffer',
 			filter: ['boolean', false],
 			paint: {
-				'line-color': '#111827',
-				'line-width': 3
+				'line-color': '#2563eb',
+				'line-width': 2.5
 			}
 		},
 		// Marker ikon per jenis usaha (pin canvas, lihat icons.ts).

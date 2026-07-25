@@ -1,0 +1,19 @@
+{
+	"name": "TransitWarga — Peta Ekonomi Informal Transit Jakarta",
+	"short_name": "TransitWarga",
+	"description": "WebGIS ekonomi informal di sekitar stasiun MRT dan halte TransJakarta: tipologi kawasan, analitik, dan rekomendasi kebijakan.",
+	"id": "/",
+	"start_url": "/",
+	"scope": "/",
+	"display": "standalone",
+	"orientation": "any",
+	"background_color": "#ffffff",
+	"theme_color": "#1d4ed8",
+	"lang": "id",
+	"categories": ["maps", "navigation", "government"],
+	"icons": [
+		{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+		{ "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+		{ "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+	]
+}

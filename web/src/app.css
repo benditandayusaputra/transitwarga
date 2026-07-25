@@ -1,7 +1,22 @@
 @import 'tailwindcss';
 
-/* Warna primer brand TransitWarga (biru) — satu-satunya tempat menggantinya. */
+/* Inter variable (latin) di-self-host — lolos CSP font-src 'self', jalan offline. */
+@font-face {
+	font-family: 'Inter';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('/fonts/inter/inter-var-latin.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Warna primer brand TransitWarga (biru) + tipografi — satu tempat menggantinya. */
 @theme {
+	--font-sans:
+		'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
 	--color-primary-50: #eff6ff;
 	--color-primary-100: #dbeafe;
 	--color-primary-200: #bfdbfe;
@@ -9,4 +24,136 @@
 	--color-primary-700: #1d4ed8;
 	--color-primary-800: #1e40af;
 	--color-primary-900: #1e3a8a;
+}
+
+/* ---------- Motion system (halus, hormati preferensi reduced motion) ---------- */
+
+@keyframes tw-fade-up {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes tw-shimmer {
+	from {
+		background-position: 200% 0;
+	}
+	to {
+		background-position: -200% 0;
+	}
+}
+
+@keyframes tw-dot {
+	0%,
+	60%,
+	100% {
+		transform: translateY(0);
+		opacity: 0.4;
+	}
+	30% {
+		transform: translateY(-3px);
+		opacity: 1;
+	}
+}
+
+@keyframes tw-tumbuh {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(1);
+	}
+}
+
+/* Konten halaman naik-halus saat dimuat */
+.anim-masuk {
+	animation: tw-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.anim-masuk-lambat {
+	animation: tw-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: 0.08s;
+}
+
+/* Skeleton shimmer utk keadaan memuat (ringkasan AI, dsb.) */
+.shimmer {
+	background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 45%, #f1f5f9 65%);
+	background-size: 200% 100%;
+	animation: tw-shimmer 1.4s linear infinite;
+}
+
+/* Tiga titik "berpikir" milik asisten AI */
+.titik-berpikir span {
+	display: inline-block;
+	width: 5px;
+	height: 5px;
+	border-radius: 9999px;
+	background: currentColor;
+	animation: tw-dot 1.2s ease-in-out infinite;
+}
+.titik-berpikir span:nth-child(2) {
+	animation-delay: 0.15s;
+}
+.titik-berpikir span:nth-child(3) {
+	animation-delay: 0.3s;
+}
+
+/* Bar chart tumbuh dari kiri saat pertama tampil */
+.bar-tumbuh {
+	transform-origin: left center;
+	animation: tw-tumbuh 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.anim-masuk,
+	.anim-masuk-lambat,
+	.shimmer,
+	.titik-berpikir span,
+	.bar-tumbuh {
+		animation: none !important;
+	}
+	* {
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* Pola titik halus di hero (kesan peta) tanpa aset eksternal */
+.hero-pola {
+	background-image:
+		radial-gradient(rgb(37 99 235 / 0.09) 1.2px, transparent 1.2px),
+		linear-gradient(to bottom, var(--color-primary-50), #ffffff);
+	background-size:
+		22px 22px,
+		100% 100%;
+}
+
+/* ---------- Polesan popup & kontrol MapLibre agar senada desain ---------- */
+
+.maplibregl-popup-content {
+	border-radius: 0.9rem !important;
+	box-shadow:
+		0 10px 25px -5px rgb(15 23 42 / 0.15),
+		0 4px 10px -6px rgb(15 23 42 / 0.1) !important;
+	border: 1px solid rgb(226 232 240 / 0.8);
+	padding: 0.6rem 0.7rem !important;
+	font-family: var(--font-sans);
+}
+.maplibregl-popup-close-button {
+	font-size: 1.1rem;
+	padding: 0 0.4rem;
+	color: #94a3b8;
+	border-radius: 0.4rem;
+}
+.maplibregl-popup-close-button:hover {
+	background: #f1f5f9;
+	color: #334155;
+}
+.maplibregl-ctrl-group {
+	border-radius: 0.75rem !important;
+	overflow: hidden;
+	box-shadow: 0 4px 12px -2px rgb(15 23 42 / 0.12) !important;
 }

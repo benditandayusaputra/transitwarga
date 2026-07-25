@@ -36,6 +36,33 @@ export function localDefaultStyle(): StyleSpecification {
 	};
 }
 
+/**
+ * Basemap terang bergaya dashboard (CARTO Positron) — default aplikasi:
+ * netral dan kontras rendah sehingga data proyek (choropleth, marker) menonjol.
+ * Resolusi tile mengikuti kerapatan layar: @2x hanya untuk layar retina supaya
+ * perangkat biasa tidak mengunduh 4× piksel yang tidak terlihat.
+ */
+export function cartoLightStyle(): StyleSpecification {
+	const skala = typeof devicePixelRatio !== 'undefined' && devicePixelRatio >= 1.5 ? '@2x' : '';
+	return {
+		version: 8,
+		name: 'transitwarga-terang',
+		glyphs: glyphsUrl(),
+		sources: {
+			carto: {
+				type: 'raster',
+				tiles: ['a', 'b', 'c', 'd'].map(
+					(s) => `https://${s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}${skala}.png`
+				),
+				tileSize: 256,
+				maxzoom: 19,
+				attribution: '© OpenStreetMap contributors © CARTO'
+			}
+		},
+		layers: [{ id: 'carto', type: 'raster', source: 'carto' }]
+	};
+}
+
 /** Basemap citra satelit (Esri World Imagery, gratis dengan atribusi). */
 export function satelliteStyle(): StyleSpecification {
 	return {
@@ -57,21 +84,24 @@ export function satelliteStyle(): StyleSpecification {
 	};
 }
 
-export type BasemapPilihan = 'jalan' | 'satelit' | 'mapid';
+export type BasemapPilihan = 'terang' | 'jalan' | 'satelit' | 'mapid';
 
 /** Daftar basemap yang tersedia (mapid hanya bila env style URL di-set). */
 export function daftarBasemap(): BasemapPilihan[] {
-	return env.PUBLIC_BASEMAP_STYLE_URL ? ['mapid', 'jalan', 'satelit'] : ['jalan', 'satelit'];
+	return env.PUBLIC_BASEMAP_STYLE_URL
+		? ['mapid', 'terang', 'jalan', 'satelit']
+		: ['terang', 'jalan', 'satelit'];
 }
 
 export function basemapAwal(): BasemapPilihan {
-	return env.PUBLIC_BASEMAP_STYLE_URL ? 'mapid' : 'jalan';
+	return env.PUBLIC_BASEMAP_STYLE_URL ? 'mapid' : 'terang';
 }
 
 export function basemapStyleFor(pilihan: BasemapPilihan): string | StyleSpecification {
 	if (pilihan === 'mapid' && env.PUBLIC_BASEMAP_STYLE_URL) return env.PUBLIC_BASEMAP_STYLE_URL;
 	if (pilihan === 'satelit') return satelliteStyle();
-	return localDefaultStyle();
+	if (pilihan === 'jalan') return localDefaultStyle();
+	return cartoLightStyle();
 }
 
 /**

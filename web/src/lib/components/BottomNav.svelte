@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import { masukSheet, pudar } from '$lib/utils/motion';
 	import Icon, { type IconName } from './Icon.svelte';
 
 	const MENU: { href: string; label: string; icon: IconName }[] = [
@@ -30,6 +31,7 @@
 		class="fixed inset-x-3 bottom-3 z-20 md:hidden"
 		aria-label="Navigasi bawah"
 		data-testid="bottom-nav"
+		transition:masukSheet
 	>
 		<div
 			class="relative rounded-2xl border border-slate-200/70 bg-white/90 shadow-2xl shadow-slate-900/10 backdrop-blur-md"
@@ -67,10 +69,11 @@
 {:else}
 	<button
 		type="button"
-		class="fixed right-3 bottom-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-slate-600 shadow-2xl shadow-slate-900/10 backdrop-blur-md hover:text-primary-700 focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:outline-none md:hidden"
+		class="hover:text-primary-700 focus-visible:ring-primary-600 fixed right-3 bottom-3 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/70 bg-white/90 text-slate-600 shadow-2xl shadow-slate-900/10 backdrop-blur-md focus-visible:ring-2 focus-visible:outline-none md:hidden"
 		aria-label="Tampilkan navigasi"
 		onclick={() => (tampil = true)}
 		data-testid="bottom-nav-tampilkan"
+		transition:pudar
 	>
 		<Icon name="chevron-atas" size={18} />
 	</button>

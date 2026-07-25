@@ -161,6 +161,35 @@ export async function cariUsaha(kataKunci: string): Promise<HasilCariUsaha[]> {
 	return toHasilCari(await query(q.sql, q.params));
 }
 
+/** Galeri temuan (halaman Survey): daftar usaha yang punya foto. */
+export function galeriUsahaQuery(limit = 12): SqlQuery {
+	return {
+		sql: `SELECT nama, jenis_tempat, foto_url FROM usaha
+WHERE foto_url IS NOT NULL AND foto_url != ''
+ORDER BY nama LIMIT ?`,
+		params: [limit]
+	};
+}
+
+export interface ItemGaleri {
+	nama: string;
+	jenis_tempat: JenisTempat;
+	foto_url: string;
+}
+
+export function toItemGaleri(rows: Row[]): ItemGaleri[] {
+	return rows.map((r) => ({
+		nama: String(r.nama ?? ''),
+		jenis_tempat: r.jenis_tempat as JenisTempat,
+		foto_url: String(r.foto_url ?? '')
+	}));
+}
+
+export async function galeriUsaha(limit = 12): Promise<ItemGaleri[]> {
+	const q = galeriUsahaQuery(limit);
+	return toItemGaleri(await query(q.sql, q.params));
+}
+
 export function detailUsahaQuery(id: string): SqlQuery {
 	return {
 		sql: `SELECT id, nama, jenis_tempat, menu_andalan, harga_rata, keramaian, mobilitas,

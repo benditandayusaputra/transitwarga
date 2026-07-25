@@ -3,6 +3,7 @@
 	import { MODA_LABELS, TIPOLOGI_COLORS, TIPOLOGI_LABELS } from '$lib/map/layers';
 	import { mapStore } from '$lib/stores/map.svelte';
 	import { formatPersen, formatRupiah, formatSkor } from '$lib/utils/format';
+	import { masukDialog, masukSheet, pudar } from '$lib/utils/motion';
 	import type { AgregatPayload } from '$lib/types';
 	import AiPanel from './AiPanel.svelte';
 	import DataTable from './DataTable.svelte';
@@ -106,6 +107,7 @@
 	<!-- Mode dialog penuh: nyaman dibaca; klik backdrop / Escape memperkecil -->
 	<div
 		class="fixed inset-0 z-50 flex items-end justify-center bg-slate-900/45 backdrop-blur-sm sm:items-center sm:p-6"
+		transition:pudar
 		data-testid="kawasan-dialog-backdrop"
 		onclick={(e) => {
 			if (e.target === e.currentTarget) mapStore.detailPenuh = false;
@@ -121,6 +123,7 @@
 		<div
 			bind:this={dialogEl}
 			class="flex max-h-[94dvh] w-full max-w-3xl flex-col overflow-hidden bg-white shadow-2xl max-sm:rounded-t-2xl sm:max-h-[88dvh] sm:rounded-2xl"
+			transition:masukDialog
 			role="dialog"
 			aria-modal="true"
 			aria-label={`Detail kawasan ${stats.nama}`}
@@ -157,6 +160,7 @@
 {:else if stats}
 	<aside
 		class="fixed inset-x-0 bottom-0 z-30 max-h-[60dvh] overflow-y-auto rounded-t-2xl border border-slate-200 bg-white p-4 shadow-xl md:absolute md:top-4 md:right-4 md:bottom-auto md:inset-x-auto md:w-96 md:max-h-[calc(100%-2rem)] md:rounded-xl"
+		transition:masukSheet
 		data-testid="kawasan-panel"
 		aria-label={`Ringkasan kawasan ${stats.nama}`}
 	>
