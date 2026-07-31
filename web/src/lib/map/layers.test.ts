@@ -51,4 +51,18 @@ describe('projectLayers', () => {
 			for (const id of group) expect(ids.has(id)).toBe(true);
 		}
 	});
+
+	it('mode vector menggunakan SOURCE_ID dan source-layer', () => {
+		const layers = projectLayers('vector');
+		const bufferLayer = layers.find((l) => l.id === 'kawasan-buffer-fill') as any;
+		expect(bufferLayer.source).toBe('transitwarga');
+		expect(bufferLayer['source-layer']).toBe('kawasan_buffer');
+	});
+
+	it('mode geojson menggunakan nama source spesifik dan tanpa source-layer', () => {
+		const layers = projectLayers('geojson');
+		const bufferLayer = layers.find((l) => l.id === 'kawasan-buffer-fill') as any;
+		expect(bufferLayer.source).toBe('kawasan_buffer');
+		expect(bufferLayer['source-layer']).toBeUndefined();
+	});
 });

@@ -107,6 +107,23 @@ def build_agregat(interim_dir: Path) -> dict:
     }
 
 
+def export_geojson(interim_dir: Path, web_data_dir: Path) -> None:
+    usaha = pd.read_parquet(interim_dir / "usaha.parquet")
+    usaha_gdf = gpd.GeoDataFrame(
+        usaha[USAHA_TILE_COLS],
+        geometry=gpd.points_from_xy(usaha["lon"], usaha["lat"]),
+        crs="EPSG:4326",
+    )
+    usaha_gdf.to_file(web_data_dir / "usaha.geojson", driver="GeoJSON")
+
+    stations = gpd.read_file(interim_dir.parent / "ref" / "stasiun.geojson")
+    stations.to_file(web_data_dir / "transit.geojson", driver="GeoJSON")
+
+    if (interim_dir / "kawasan_buffer.geojson").exists():
+        shutil.copy(interim_dir / "kawasan_buffer.geojson", web_data_dir / "kawasan_buffer.geojson")
+    print(f"[export] GeoJSON fallback -> {web_data_dir}")
+
+
 def run(
     interim_dir: Path, web_data_dir: Path, api_generated_dir: Path, skip_tiles: bool = False
 ) -> None:
@@ -127,7 +144,10 @@ def run(
         f"data_version={agregat['data_version']})"
     )
 
+    export_geojson(interim_dir, web_data_dir)
+
     if skip_tiles:
         print("[export] build tiles dilewati (--skip-tiles)")
         return
     build_tiles(interim_dir, web_data_dir / "tiles.pmtiles")
+

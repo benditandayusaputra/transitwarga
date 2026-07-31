@@ -65,16 +65,29 @@
 
 	function handleClick(m: maplibregl.Map, e: maplibregl.MapMouseEvent) {
 		const feats = m.queryRenderedFeatures(e.point, {
-			layers: [LAYER_IDS.usaha, LAYER_IDS.transit, LAYER_IDS.bufferFill]
+			layers: [
+				LAYER_IDS.usaha,
+				LAYER_IDS.usahaLabel,
+				LAYER_IDS.transit,
+				LAYER_IDS.transitLabel,
+				LAYER_IDS.bufferFill,
+				LAYER_IDS.bufferLine
+			]
 		});
-		const usahaFeat = feats.find((f) => f.layer.id === LAYER_IDS.usaha);
+		const usahaFeat = feats.find(
+			(f) => f.layer.id === LAYER_IDS.usaha || f.layer.id === LAYER_IDS.usahaLabel
+		);
 		if (usahaFeat) {
 			const row = toUsahaRow(usahaFeat.properties ?? {});
 			if (row) showUsahaPopup(m, e.lngLat, row);
 			return;
 		}
 		const kawasanFeat = feats.find(
-			(f) => f.layer.id === LAYER_IDS.transit || f.layer.id === LAYER_IDS.bufferFill
+			(f) =>
+				f.layer.id === LAYER_IDS.transit ||
+				f.layer.id === LAYER_IDS.transitLabel ||
+				f.layer.id === LAYER_IDS.bufferFill ||
+				f.layer.id === LAYER_IDS.bufferLine
 		);
 		if (kawasanFeat) {
 			const id = String(kawasanFeat.properties?.kawasan_id ?? '');
@@ -132,15 +145,21 @@
 
 		// style.load terjadi saat init DAN setiap ganti basemap: pasang ulang
 		// ikon + source/layer proyek + state filter/visibilitas.
-		m.on('style.load', () => {
+		const setupLayers = async () => {
 			ensureMapIcons(m);
-			addProjectLayers(m);
+			await addProjectLayers(m);
 			applyUsahaFilter(m);
 			applyModaFilter(m);
 			applyHighlight(m);
 			applyVisibility(m);
 			layersReady = true;
-		});
+			m.resize();
+		};
+
+		if (m.isStyleLoaded()) {
+			setupLayers();
+		}
+		m.on('style.load', setupLayers);
 		m.on('styleimagemissing', () => ensureMapIcons(m));
 		m.once('idle', () => container.setAttribute('data-map-idle', 'true'));
 		m.on('moveend', () => {

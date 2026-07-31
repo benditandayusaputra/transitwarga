@@ -13,14 +13,14 @@
 	aria-label="Legenda tipologi kawasan dan moda transit"
 >
 	<div>
-		<h3 class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<h3 class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Tipologi kawasan
 		</h3>
 		<ul class="space-y-1">
 			{#each tipologiList as t (t)}
-				<li class="flex items-center gap-2.5 rounded-lg px-2 py-1 text-xs text-slate-700">
+				<li class="flex items-center gap-2.5 rounded-xl px-2 py-1 text-xs font-extrabold text-black">
 					<span
-						class="inline-block h-3.5 w-3.5 shrink-0 rounded"
+						class="inline-block h-3.5 w-3.5 shrink-0 rounded shadow-sm"
 						style:background-color={TIPOLOGI_COLORS[t]}
 					></span>
 					{TIPOLOGI_LABELS[t]}
@@ -29,14 +29,14 @@
 		</ul>
 	</div>
 	<div>
-		<h3 class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<h3 class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Moda transit
 		</h3>
 		<ul class="space-y-1">
 			{#each modaList as m (m)}
-				<li class="flex items-center gap-2.5 rounded-lg px-2 py-1 text-xs text-slate-700">
+				<li class="flex items-center gap-2.5 rounded-xl px-2 py-1 text-xs font-extrabold text-black">
 					<span
-						class="inline-block h-3.5 w-3.5 shrink-0 rounded-full border-2 border-white shadow"
+						class="inline-block h-3.5 w-3.5 shrink-0 rounded-full border-2 border-white shadow-sm"
 						style:background-color={MODA_COLORS[m]}
 					></span>
 					{MODA_LABELS[m]}

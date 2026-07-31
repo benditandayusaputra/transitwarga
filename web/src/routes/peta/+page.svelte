@@ -36,14 +36,14 @@
 
 	function tombolClass(p: Panel): string {
 		const dasar =
-			'flex h-10 w-10 items-center justify-center rounded-xl transition-colors focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:outline-none';
+			'flex h-10 w-10 items-center justify-center rounded-xl transition-all focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none';
 		if (panelAktif === 'auto' && p === 'filter') {
 			// SSR/pra-hidrasi: aktif hanya di desktop (selaras panel auto via CSS)
-			return `${dasar} text-slate-600 hover:bg-slate-100 md:bg-primary-700 md:text-white md:hover:bg-primary-800`;
+			return `${dasar} text-black font-extrabold hover:bg-white/50 md:bg-slate-950 md:text-white md:hover:bg-black`;
 		}
 		return efektifPanel === p
-			? `${dasar} bg-primary-700 text-white hover:bg-primary-800`
-			: `${dasar} text-slate-600 hover:bg-slate-100`;
+			? `${dasar} bg-slate-950 text-white font-extrabold shadow-md hover:bg-black`
+			: `${dasar} text-black font-extrabold hover:bg-white/50`;
 	}
 </script>
 
@@ -79,7 +79,7 @@
 		<SearchBox />
 		<div class="flex items-start gap-2">
 			<nav
-				class="flex shrink-0 flex-col gap-1 rounded-2xl border border-slate-200/80 bg-white/95 p-1.5 shadow-lg backdrop-blur-sm"
+				class="liquid-glass flex shrink-0 flex-col gap-1 rounded-2xl p-1.5 shadow-2xl"
 				aria-label="Kontrol peta"
 			>
 				{#each TOMBOL as t (t.id)}

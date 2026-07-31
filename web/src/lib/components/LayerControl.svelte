@@ -22,23 +22,23 @@
 
 <div class="space-y-3">
 	<fieldset>
-		<legend class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Layer data
 		</legend>
 		<ul class="space-y-1">
 			{#each groups as group (group)}
 				<li>
 					<label
-						class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
+						class="flex cursor-pointer items-center gap-2.5 rounded-xl px-2 py-1.5 text-xs font-extrabold text-black hover:bg-white/40"
 					>
 						<input
 							type="checkbox"
-							class="accent-primary-700"
+							class="accent-slate-950"
 							checked={mapStore.layerVisibility[group]}
 							onchange={() => mapStore.toggleLayer(group)}
 							data-testid={`layer-toggle-${group}`}
 						/>
-						<span class="text-slate-400"><Icon name={GROUP_ICONS[group]} size={15} /></span>
+						<span class="text-black"><Icon name={GROUP_ICONS[group]} size={15} /></span>
 						{LAYER_GROUP_LABELS[group]}
 					</label>
 				</li>
@@ -47,7 +47,7 @@
 	</fieldset>
 
 	<fieldset>
-		<legend class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Basemap
 		</legend>
 		<div class="grid grid-cols-2 gap-1.5" role="group" aria-label="Pilih basemap">
@@ -55,8 +55,8 @@
 				<button
 					type="button"
 					class={mapStore.basemap === b
-						? 'flex items-center justify-center gap-1.5 rounded-lg bg-primary-700 px-2 py-1.5 text-xs font-semibold text-white'
-						: 'flex items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-xs font-medium text-slate-600 hover:border-primary-600 hover:text-primary-700'}
+						? 'flex items-center justify-center gap-1.5 rounded-xl bg-slate-950 px-2 py-1.5 text-xs font-extrabold text-white shadow-md'
+						: 'liquid-glass-pill flex items-center justify-center gap-1.5 px-2 py-1.5 text-xs font-extrabold text-black'}
 					aria-pressed={mapStore.basemap === b}
 					onclick={() => (mapStore.basemap = b)}
 					data-testid={`basemap-${b}`}

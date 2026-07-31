@@ -19,24 +19,24 @@
 </script>
 
 <section
-	class="w-72 max-w-[calc(100vw-5.5rem)] overflow-hidden rounded-2xl border border-slate-200/80 bg-white/95 shadow-lg backdrop-blur-sm"
+	class="liquid-glass w-72 max-w-[calc(100vw-5.5rem)] overflow-hidden rounded-2xl border border-white/70 shadow-2xl"
 	aria-label={judul}
 	data-testid={testid}
 	transition:masukPanel
 >
-	<header class="flex items-center gap-2 border-b border-slate-100 px-3.5 py-2.5">
-		<span class="text-primary-700"><Icon name={icon} size={16} /></span>
-		<h2 class="flex-1 text-xs font-bold tracking-wide text-slate-700 uppercase">{judul}</h2>
+	<header class="flex items-center gap-2 border-b border-white/40 px-3.5 py-2.5">
+		<span class="text-slate-950"><Icon name={icon} size={16} /></span>
+		<h2 class="flex-1 text-xs font-extrabold tracking-wide text-black uppercase">{judul}</h2>
 		<button
 			type="button"
-			class="rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:outline-none"
+			class="rounded-md p-1 text-black font-bold hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
 			aria-label={`Tutup panel ${judul}`}
 			onclick={onTutup}
 		>
 			<Icon name="tutup" size={14} />
 		</button>
 	</header>
-	<div class="max-h-[55dvh] overflow-y-auto p-3.5">
+	<div class="liquid-glass-scroll max-h-[55dvh] overflow-y-auto p-3.5">
 		{@render children()}
 	</div>
 </section>

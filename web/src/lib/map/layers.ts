@@ -113,14 +113,17 @@ export const LAYER_GROUP_LABELS: Record<LayerGroup, string> = {
 	transit: 'Stasiun & halte'
 };
 
+export type SourceType = 'vector' | 'geojson';
+
 /** Definisi seluruh layer proyek; urutan array = urutan render (buffer di bawah). */
-export function projectLayers(): LayerSpecification[] {
+export function projectLayers(sourceType: SourceType = 'vector'): LayerSpecification[] {
+	const isVector = sourceType === 'vector';
 	return [
 		{
 			id: LAYER_IDS.bufferFill,
 			type: 'fill',
-			source: SOURCE_ID,
-			'source-layer': 'kawasan_buffer',
+			source: isVector ? SOURCE_ID : 'kawasan_buffer',
+			...(isVector ? { 'source-layer': 'kawasan_buffer' } : {}),
 			paint: {
 				'fill-color': colorMatchExpression('tipologi', TIPOLOGI_COLORS),
 				'fill-opacity': ['case', ['==', ['get', 'radius_m'], 400], 0.35, 0.15]
@@ -129,8 +132,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.bufferLine,
 			type: 'line',
-			source: SOURCE_ID,
-			'source-layer': 'kawasan_buffer',
+			source: isVector ? SOURCE_ID : 'kawasan_buffer',
+			...(isVector ? { 'source-layer': 'kawasan_buffer' } : {}),
 			paint: {
 				'line-color': colorMatchExpression('tipologi', TIPOLOGI_COLORS),
 				'line-width': 1,
@@ -141,8 +144,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.highlightGlow,
 			type: 'line',
-			source: SOURCE_ID,
-			'source-layer': 'kawasan_buffer',
+			source: isVector ? SOURCE_ID : 'kawasan_buffer',
+			...(isVector ? { 'source-layer': 'kawasan_buffer' } : {}),
 			filter: ['boolean', false],
 			paint: {
 				'line-color': '#2563eb',
@@ -154,8 +157,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.highlight,
 			type: 'line',
-			source: SOURCE_ID,
-			'source-layer': 'kawasan_buffer',
+			source: isVector ? SOURCE_ID : 'kawasan_buffer',
+			...(isVector ? { 'source-layer': 'kawasan_buffer' } : {}),
 			filter: ['boolean', false],
 			paint: {
 				'line-color': '#2563eb',
@@ -166,8 +169,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.usaha,
 			type: 'symbol',
-			source: SOURCE_ID,
-			'source-layer': 'usaha',
+			source: isVector ? SOURCE_ID : 'usaha',
+			...(isVector ? { 'source-layer': 'usaha' } : {}),
 			minzoom: USAHA_MINZOOM,
 			layout: {
 				'icon-image': ['concat', 'jenis-', ['get', 'jenis_tempat']],
@@ -180,8 +183,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.transit,
 			type: 'circle',
-			source: SOURCE_ID,
-			'source-layer': 'transit',
+			source: isVector ? SOURCE_ID : 'transit',
+			...(isVector ? { 'source-layer': 'transit' } : {}),
 			paint: {
 				'circle-color': colorMatchExpression('moda', MODA_COLORS),
 				'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 5, 13, 9, 16, 12],
@@ -193,8 +196,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.usahaLabel,
 			type: 'symbol',
-			source: SOURCE_ID,
-			'source-layer': 'usaha',
+			source: isVector ? SOURCE_ID : 'usaha',
+			...(isVector ? { 'source-layer': 'usaha' } : {}),
 			minzoom: 14,
 			layout: {
 				'text-field': ['get', 'nama'],
@@ -214,8 +217,8 @@ export function projectLayers(): LayerSpecification[] {
 		{
 			id: LAYER_IDS.transitLabel,
 			type: 'symbol',
-			source: SOURCE_ID,
-			'source-layer': 'transit',
+			source: isVector ? SOURCE_ID : 'transit',
+			...(isVector ? { 'source-layer': 'transit' } : {}),
 			minzoom: 10,
 			layout: {
 				'text-field': ['get', 'nama'],

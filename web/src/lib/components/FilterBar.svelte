@@ -43,14 +43,14 @@
 
 	function chipClass(active: boolean): string {
 		return active
-			? 'rounded-full bg-primary-700 px-2.5 py-1 text-xs font-medium text-white transition-colors'
-			: 'rounded-full border border-slate-300 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 transition-colors hover:border-primary-600 hover:text-primary-700';
+			? 'rounded-full bg-slate-950 px-2.5 py-1 text-xs font-extrabold text-white shadow-md transition-all'
+			: 'liquid-glass-pill px-2.5 py-1 text-xs font-extrabold text-black transition-all hover:text-black';
 	}
 </script>
 
 <div class="space-y-3" data-testid="filter-bar">
 	<fieldset>
-		<legend class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Jenis tempat
 		</legend>
 		<div class="flex flex-wrap gap-1.5">
@@ -69,7 +69,7 @@
 	</fieldset>
 
 	<fieldset>
-		<legend class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Keramaian
 		</legend>
 		<div class="flex flex-wrap gap-1.5">
@@ -88,7 +88,7 @@
 	</fieldset>
 
 	<fieldset>
-		<legend class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Moda transit
 		</legend>
 		<div class="flex flex-wrap gap-1.5">
@@ -107,13 +107,13 @@
 	</fieldset>
 
 	<fieldset>
-		<legend class="mb-1.5 text-[11px] font-semibold tracking-wide text-slate-400 uppercase">
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Harga per porsi (Rp)
 		</legend>
 		<div class="flex items-center gap-1.5">
 			<input
 				type="number"
-				class="w-0 min-w-0 flex-1 rounded-lg border border-slate-300 px-2 py-1.5 text-xs focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:outline-none"
+				class="liquid-glass-inner w-0 min-w-0 flex-1 rounded-xl px-2 py-1.5 text-xs font-extrabold text-black placeholder:text-black/60 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
 				placeholder="min"
 				min="0"
 				step="1000"
@@ -121,10 +121,10 @@
 				aria-label="Harga minimum"
 				data-testid="filter-harga-min"
 			/>
-			<span class="text-xs text-slate-400">–</span>
+			<span class="text-xs font-black text-black">–</span>
 			<input
 				type="number"
-				class="w-0 min-w-0 flex-1 rounded-lg border border-slate-300 px-2 py-1.5 text-xs focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:outline-none"
+				class="liquid-glass-inner w-0 min-w-0 flex-1 rounded-xl px-2 py-1.5 text-xs font-extrabold text-black placeholder:text-black/60 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
 				placeholder="maks"
 				min="0"
 				step="1000"
@@ -134,7 +134,7 @@
 			/>
 			<button
 				type="button"
-				class="rounded-lg bg-primary-700 px-2.5 py-1.5 text-xs font-semibold text-white hover:bg-primary-800 disabled:opacity-50"
+				class="rounded-xl bg-slate-950 px-2.5 py-1.5 text-xs font-extrabold text-white shadow-md hover:bg-black disabled:opacity-50"
 				onclick={terapkanFilterHarga}
 				disabled={menerapkanHarga}
 				data-testid="filter-harga-terapkan"
@@ -143,7 +143,7 @@
 			</button>
 		</div>
 		{#if filterHargaGagal}
-			<p class="mt-1.5 text-xs text-amber-600">Filter harga tidak tersedia di perangkat ini.</p>
+			<p class="mt-1.5 text-xs font-bold text-amber-700">Filter harga tidak tersedia di perangkat ini.</p>
 		{/if}
 	</fieldset>
 

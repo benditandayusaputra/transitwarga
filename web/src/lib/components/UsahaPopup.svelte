@@ -28,51 +28,51 @@
 	});
 </script>
 
-<div class="min-w-48 p-1" data-testid="usaha-popup">
-	<h3 class="text-sm font-semibold text-slate-900">{usaha.nama}</h3>
-	<dl class="mt-1 space-y-0.5 text-xs text-slate-600">
+<div class="min-w-48 p-1 text-black" data-testid="usaha-popup">
+	<h3 class="text-sm font-black text-black">{usaha.nama}</h3>
+	<dl class="mt-1 space-y-0.5 text-xs text-black font-extrabold">
 		<div class="flex justify-between gap-4">
-			<dt>Jenis</dt>
-			<dd class="font-medium">{JENIS_LABELS[usaha.jenis_tempat] ?? usaha.jenis_tempat}</dd>
+			<dt class="font-bold text-black/80">Jenis</dt>
+			<dd class="font-black text-black">{JENIS_LABELS[usaha.jenis_tempat] ?? usaha.jenis_tempat}</dd>
 		</div>
 		<div class="flex justify-between gap-4">
-			<dt>Harga rata</dt>
-			<dd class="font-medium">{formatRupiah(usaha.harga_rata)}</dd>
+			<dt class="font-bold text-black/80">Harga rata</dt>
+			<dd class="font-black text-black">{formatRupiah(usaha.harga_rata)}</dd>
 		</div>
 		<div class="flex justify-between gap-4">
-			<dt>Keramaian</dt>
-			<dd class="font-medium capitalize">{usaha.keramaian}</dd>
+			<dt class="font-bold text-black/80">Keramaian</dt>
+			<dd class="font-black text-black capitalize">{usaha.keramaian}</dd>
 		</div>
 	</dl>
 
 	{#if memuatDetail}
-		<p class="mt-2 text-xs text-slate-400 italic" data-testid="popup-detail-placeholder">
+		<p class="mt-2 text-xs font-bold text-black/70 italic" data-testid="popup-detail-placeholder">
 			Memuat detail…
 		</p>
 	{:else if detail}
-		<dl class="mt-2 space-y-0.5 border-t border-slate-100 pt-2 text-xs text-slate-600">
+		<dl class="mt-2 space-y-0.5 border-t border-white/50 pt-2 text-xs text-black font-extrabold">
 			{#if detail.menu_andalan}
 				<div class="flex justify-between gap-4">
-					<dt>Menu andalan</dt>
-					<dd class="font-medium">{detail.menu_andalan}</dd>
+					<dt class="font-bold text-black/80">Menu andalan</dt>
+					<dd class="font-black text-black">{detail.menu_andalan}</dd>
 				</div>
 			{/if}
 			{#if detail.mobilitas}
 				<div class="flex justify-between gap-4">
-					<dt>Mobilitas</dt>
-					<dd class="font-medium capitalize">{detail.mobilitas}</dd>
+					<dt class="font-bold text-black/80">Mobilitas</dt>
+					<dd class="font-black text-black capitalize">{detail.mobilitas}</dd>
 				</div>
 			{/if}
 			{#if detail.jarak_stasiun_m !== null}
 				<div class="flex justify-between gap-4">
-					<dt>Jarak stasiun</dt>
-					<dd class="font-medium">{detail.jarak_stasiun_m} m</dd>
+					<dt class="font-bold text-black/80">Jarak stasiun</dt>
+					<dd class="font-black text-black">{detail.jarak_stasiun_m} m</dd>
 				</div>
 			{/if}
 			{#if detail.waktu_catat}
 				<div class="flex justify-between gap-4">
-					<dt>Dicatat</dt>
-					<dd class="font-medium">{detail.waktu_catat}</dd>
+					<dt class="font-bold text-black/80">Dicatat</dt>
+					<dd class="font-black text-black">{detail.waktu_catat}</dd>
 				</div>
 			{/if}
 		</dl>
@@ -87,17 +87,17 @@
 				<img
 					src={detail.foto_url}
 					alt={`Foto ${usaha.nama}`}
-					class="mt-2 h-28 w-full rounded-lg border border-slate-100 object-cover"
+					class="mt-2 h-28 w-full rounded-xl border border-white/60 object-cover shadow-sm"
 					loading="lazy"
 					onerror={() => (fotoGagal = true)}
 					data-testid="foto-usaha"
 				/>
 			</a>
 		{:else if detail.foto_url && fotoGagal}
-			<p class="mt-2 text-xs text-slate-400 italic">Foto tidak dapat dimuat.</p>
+			<p class="mt-2 text-xs font-bold text-black/70 italic">Foto tidak dapat dimuat.</p>
 		{/if}
 	{:else if detailGagal}
-		<p class="mt-2 text-xs text-slate-400 italic" data-testid="popup-detail-placeholder">
+		<p class="mt-2 text-xs font-bold text-black/70 italic" data-testid="popup-detail-placeholder">
 			Detail lengkap tidak tersedia.
 		</p>
 	{/if}

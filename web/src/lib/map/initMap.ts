@@ -133,12 +133,38 @@ export function tilesUrl(): string {
 	return `pmtiles://${location.origin}/data/tiles.pmtiles`;
 }
 
-/** Tambah source PMTiles + seluruh layer proyek (dipanggil setelah event load). */
-export function addProjectLayers(map: maplibregl.Map): void {
-	if (map.getSource(SOURCE_ID)) return;
-	map.addSource(SOURCE_ID, { type: 'vector', url: tilesUrl() });
-	for (const layer of projectLayers()) {
-		map.addLayer(layer);
+let pmtilesCheckPromise: Promise<boolean> | null = null;
+
+export function checkPmtilesAvailable(): Promise<boolean> {
+	if (!pmtilesCheckPromise) {
+		pmtilesCheckPromise = fetch('/data/tiles.pmtiles', { method: 'HEAD' })
+			.then((res) => res.ok)
+			.catch(() => false);
+	}
+	return pmtilesCheckPromise;
+}
+
+/** Tambah source PMTiles / GeoJSON fallback + seluruh layer proyek (dipanggil setelah event load). */
+export async function addProjectLayers(map: maplibregl.Map): Promise<void> {
+	if (map.getSource(SOURCE_ID) || map.getSource('usaha')) return;
+
+	// Cek apakah tiles.pmtiles tersedia di server/static (cached)
+	const adaPmtiles = await checkPmtilesAvailable();
+
+	if (adaPmtiles) {
+		map.addSource(SOURCE_ID, { type: 'vector', url: tilesUrl() });
+		for (const layer of projectLayers('vector')) {
+			map.addLayer(layer);
+		}
+	} else {
+		// Fallback ke GeoJSON lokal yang sudah tersedia di static/data/
+		map.addSource('kawasan_buffer', { type: 'geojson', data: '/data/kawasan_buffer.geojson' });
+		map.addSource('transit', { type: 'geojson', data: '/data/transit.geojson' });
+		map.addSource('usaha', { type: 'geojson', data: '/data/usaha.geojson' });
+
+		for (const layer of projectLayers('geojson')) {
+			map.addLayer(layer);
+		}
 	}
 }
 

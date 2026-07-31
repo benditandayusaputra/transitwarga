@@ -82,8 +82,8 @@
 	}
 </script>
 
-<section class="mt-4 border-t border-slate-200 pt-3" data-testid="ai-panel">
-	<h3 class="text-xs font-semibold text-slate-500 uppercase">Ringkasan AI</h3>
+<section class="mt-4 border-t border-white/40 pt-3" data-testid="ai-panel">
+	<h3 class="text-xs font-black text-black uppercase">Ringkasan AI</h3>
 
 	{#if memuatSummary}
 		<!-- Skeleton shimmer: AI sedang menyusun narasi dari data kawasan -->
@@ -91,7 +91,7 @@
 			<div class="shimmer h-3 w-full rounded-full"></div>
 			<div class="shimmer h-3 w-11/12 rounded-full"></div>
 			<div class="shimmer h-3 w-4/6 rounded-full"></div>
-			<p class="text-primary-700 flex items-center gap-1.5 pt-0.5 text-xs">
+			<p class="text-black font-extrabold flex items-center gap-1.5 pt-0.5 text-xs">
 				<span class="titik-berpikir inline-flex gap-0.5"
 					><span></span><span></span><span></span></span
 				>
@@ -100,34 +100,34 @@
 		</div>
 	{:else if summary}
 		<!-- Narasi AI selalu teks murni — tanpa {@html} (aturan keamanan). -->
-		<p class="mt-1.5 text-sm leading-relaxed text-slate-700" data-testid="ai-summary">
+		<p class="mt-1.5 text-sm font-extrabold leading-relaxed text-black" data-testid="ai-summary">
 			{summary.narasi}
 		</p>
-		<dl class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500">
+		<dl class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs font-extrabold text-black">
 			<div>
-				<dt class="inline">Usaha:</dt>
-				<dd class="inline font-semibold">{summary.indikator.n_usaha}</dd>
+				<dt class="inline font-bold">Usaha:</dt>
+				<dd class="inline font-black text-black">{summary.indikator.n_usaha}</dd>
 			</div>
 			<div>
-				<dt class="inline">Median:</dt>
-				<dd class="inline font-semibold">{formatRupiah(summary.indikator.harga_median)}</dd>
+				<dt class="inline font-bold">Median:</dt>
+				<dd class="inline font-black text-black">{formatRupiah(summary.indikator.harga_median)}</dd>
 			</div>
 			<div>
-				<dt class="inline">Digital:</dt>
-				<dd class="inline font-semibold">{formatPersen(summary.indikator.pct_digital)}</dd>
+				<dt class="inline font-bold">Digital:</dt>
+				<dd class="inline font-black text-black">{formatPersen(summary.indikator.pct_digital)}</dd>
 			</div>
 		</dl>
 	{:else if summaryError}
-		<p class="mt-1.5 text-xs text-amber-600" data-testid="ai-summary-error">{summaryError}</p>
+		<p class="mt-1.5 text-xs font-bold text-amber-700" data-testid="ai-summary-error">{summaryError}</p>
 	{/if}
 
-	<h3 class="mt-4 text-xs font-semibold text-slate-500 uppercase">Tanya kebijakan</h3>
-	<ul class="mt-2 max-h-56 space-y-2 overflow-y-auto" data-testid="chat-messages">
+	<h3 class="mt-4 text-xs font-black text-black uppercase">Tanya kebijakan</h3>
+	<ul class="liquid-glass-scroll mt-2 max-h-56 space-y-2 overflow-y-auto rounded-2xl p-1.5" data-testid="chat-messages">
 		{#each chatStore.messages as pesan, i (i)}
 			<li
 				class={pesan.role === 'user'
-					? 'ml-6 rounded-lg bg-primary-50 p-2 text-sm text-slate-800'
-					: 'mr-6 rounded-lg bg-slate-100 p-2 text-sm text-slate-800'}
+					? 'liquid-glass-inner ml-6 rounded-xl p-2.5 text-sm font-extrabold text-black shadow-sm'
+					: 'liquid-glass mr-6 rounded-xl p-2.5 text-sm font-extrabold text-black shadow-sm'}
 				data-role={pesan.role}
 			>
 				{pesan.content}
@@ -137,7 +137,7 @@
 			{#if chatStore.streamingText === ''}
 				<!-- AI sedang berpikir: belum ada delta pertama -->
 				<li
-					class="text-primary-700 mr-6 flex w-fit items-center gap-2 rounded-lg bg-slate-100 px-3 py-2.5 text-sm"
+					class="liquid-glass mr-6 flex w-fit items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-extrabold text-black"
 					data-role="assistant"
 					data-testid="chat-berpikir"
 					aria-label="Asisten sedang menganalisis"
@@ -145,27 +145,27 @@
 					<span class="titik-berpikir inline-flex gap-1"
 						><span></span><span></span><span></span></span
 					>
-					<span class="text-xs text-slate-500">menganalisis…</span>
+					<span class="text-xs font-bold text-black">menganalisis…</span>
 				</li>
 			{:else}
 				<li
-					class="mr-6 rounded-lg bg-slate-100 p-2 text-sm text-slate-800"
+					class="liquid-glass mr-6 rounded-xl p-2.5 text-sm font-extrabold text-black"
 					data-role="assistant"
 					data-testid="chat-streaming"
 				>
 					{chatStore.streamingText}<span
-						class="bg-primary-600 ml-0.5 inline-block h-3.5 w-0.75 animate-pulse rounded-full align-middle"
+						class="bg-slate-950 ml-0.5 inline-block h-3.5 w-0.75 animate-pulse rounded-full align-middle"
 					></span>
 				</li>
 			{/if}
 		{/if}
 	</ul>
 	{#if chatStore.error}
-		<p class="mt-2 text-xs text-amber-600" data-testid="chat-error">{chatStore.error}</p>
+		<p class="mt-2 text-xs font-bold text-amber-700" data-testid="chat-error">{chatStore.error}</p>
 	{/if}
 	{#if mapStore.compareTarget}
 		<a
-			class="mt-2 inline-block text-xs font-medium text-primary-700 underline underline-offset-2"
+			class="mt-2 inline-block text-xs font-extrabold text-black underline underline-offset-2 hover:text-slate-800"
 			href={`/analisis?a=${encodeURIComponent(mapStore.compareTarget[0])}&b=${encodeURIComponent(mapStore.compareTarget[1])}`}
 			data-testid="link-compare"
 		>
@@ -175,14 +175,14 @@
 
 	{#if butuhTurnstile}
 		<TurnstileWidget onToken={(t) => (chatStore.turnstileToken = t)} />
-		<p class="text-xs text-slate-400">Selesaikan verifikasi di atas untuk mulai bertanya.</p>
+		<p class="text-xs font-bold text-black/70">Selesaikan verifikasi di atas untuk mulai bertanya.</p>
 	{/if}
 
 	<form class="mt-2 flex gap-2" onsubmit={kirim}>
 		<label class="sr-only" for="chat-input">Pertanyaan untuk asisten kebijakan</label>
 		<input
 			id="chat-input"
-			class="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+			class="liquid-glass-inner min-w-0 flex-1 rounded-xl px-3 py-2 text-sm font-extrabold text-black placeholder:text-black/60 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
 			placeholder="Mis. kawasan mana yang butuh penataan?"
 			maxlength="500"
 			bind:value={input}
@@ -190,7 +190,7 @@
 		/>
 		<button
 			type="submit"
-			class="rounded-lg bg-primary-700 px-3 py-2 text-sm font-semibold text-white hover:bg-primary-800 disabled:opacity-50"
+			class="rounded-xl bg-slate-950 px-3 py-2 text-sm font-extrabold text-white shadow-md hover:bg-black disabled:opacity-50"
 			disabled={chatStore.sedangMengirim || butuhTurnstile}
 			data-testid="chat-kirim"
 		>
