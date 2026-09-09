@@ -10,6 +10,7 @@
 		highlightFilterExpression,
 		idFilterExpression,
 		modaFilterExpression,
+		surveyFilterExpression,
 		usahaFilterExpression
 	} from '$lib/map/filterExpr';
 	import { filters } from '$lib/stores/filters.svelte';
@@ -18,6 +19,7 @@
 	import type { AgregatKawasan, UsahaRow } from '$lib/types';
 	import UsahaPopup from './UsahaPopup.svelte';
 	import SurveyPopup from './SurveyPopup.svelte';
+	import { sortMediasPhotosFirst } from '$lib/data/mapidActivities';
 
 	let container: HTMLDivElement;
 	let map: maplibregl.Map | null = $state.raw(null);
@@ -76,6 +78,7 @@
 		} catch {
 			medias = [];
 		}
+		medias = sortMediasPhotosFirst(medias);
 
 		const comp = mount(SurveyPopup, {
 			target: el,
@@ -162,6 +165,18 @@
 		m.setFilter(LAYER_IDS.bufferLine, expr);
 	}
 
+	function applySurveyFilter(m: maplibregl.Map) {
+		if (!m.getLayer(LAYER_IDS.survey)) return;
+		const expr = surveyFilterExpression({
+			surveyTopik: filters.surveyTopik,
+			surveyor: filters.surveyor
+		});
+		m.setFilter(LAYER_IDS.survey, expr);
+		if (m.getLayer(LAYER_IDS.surveyLabel)) {
+			m.setFilter(LAYER_IDS.surveyLabel, expr);
+		}
+	}
+
 	function applyHighlight(m: maplibregl.Map) {
 		const ids = [...new Set([...mapStore.highlight, mapStore.kawasanAktif ?? ''])].filter(Boolean);
 		const expr = highlightFilterExpression(ids);
@@ -194,6 +209,7 @@
 			await addProjectLayers(m);
 			applyUsahaFilter(m);
 			applyModaFilter(m);
+			applySurveyFilter(m);
 			applyHighlight(m);
 			applyVisibility(m);
 			layersReady = true;
@@ -243,6 +259,11 @@
 	$effect(() => {
 		if (!map || !layersReady) return;
 		applyModaFilter(map);
+	});
+
+	$effect(() => {
+		if (!map || !layersReady) return;
+		applySurveyFilter(map);
 	});
 
 	// Highlight: kawasan aktif + daftar highlight (aksi AI).

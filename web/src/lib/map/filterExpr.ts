@@ -64,3 +64,36 @@ export function combineFilters(
 	if (active.length === 1) return active[0];
 	return ['all', ...active] as unknown as FilterSpecification;
 }
+
+export interface SurveyFilterState {
+	surveyTopik: string[];
+	surveyor: string[];
+}
+
+/** Filter observasi lapangan (#Devunder) berdasarkan topik dan/atau surveyor. */
+export function surveyFilterExpression(
+	state: SurveyFilterState
+): FilterSpecification | null {
+	const clauses: Expr[] = [];
+
+	if (state.surveyTopik.length > 0) {
+		const topicClauses: Expr[] = state.surveyTopik.map((t) => [
+			'==',
+			['get', `topik_${t}`],
+			true
+		]);
+		if (topicClauses.length === 1) {
+			clauses.push(topicClauses[0]);
+		} else {
+			clauses.push(['any', ...topicClauses]);
+		}
+	}
+
+	if (state.surveyor.length > 0) {
+		clauses.push(inClause('user_name', state.surveyor));
+	}
+
+	if (clauses.length === 0) return null;
+	if (clauses.length === 1) return clauses[0] as FilterSpecification;
+	return ['all', ...clauses] as FilterSpecification;
+}

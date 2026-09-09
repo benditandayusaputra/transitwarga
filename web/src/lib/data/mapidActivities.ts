@@ -89,6 +89,35 @@ export interface FetchActivitiesOptions {
 }
 
 /**
+ * Memeriksa apakah suatu URL media merupakan snapshot peta (minimap / denah) dari MAPID.
+ */
+export function isMapMediaUrl(url: string): boolean {
+	if (!url || typeof url !== 'string') return false;
+	const lower = url.toLowerCase();
+	if (lower.includes('_map_') || lower.includes('/map_') || lower.includes('map_')) return true;
+	if (lower.endsWith('.png')) return true;
+	return false;
+}
+
+/**
+ * Mengurutkan array media sehingga foto dokumentasi lapangan tampil di halaman/slide pertama,
+ * dan gambar peta (minimap) diposisikan paling belakang.
+ */
+export function sortMediasPhotosFirst(medias: string[]): string[] {
+	if (!Array.isArray(medias) || medias.length <= 1) return medias || [];
+	const photos: string[] = [];
+	const maps: string[] = [];
+	for (const url of medias) {
+		if (isMapMediaUrl(url)) {
+			maps.push(url);
+		} else {
+			photos.push(url);
+		}
+	}
+	return [...photos, ...maps];
+}
+
+/**
  * Mengambil daftar aktivitas lapangan MAPID (#Devunder).
  * Otomatis fallback ke data statis lokal bila request jaringan gagal.
  */
@@ -134,7 +163,10 @@ export async function fetchMapidActivities(
 
 			const json = (await res.json()) as MapidActivitiesResponse;
 			if (json.success && Array.isArray(json.data?.activities)) {
-				cachedActivities = json.data.activities;
+				cachedActivities = json.data.activities.map((act) => ({
+					...act,
+					medias: sortMediasPhotosFirst(act.medias || [])
+				}));
 				return cachedActivities;
 			}
 			throw new Error(json.message || 'Respon API tidak valid');
@@ -145,7 +177,10 @@ export async function fetchMapidActivities(
 				if (fallbackRes.ok) {
 					const fallbackJson = (await fallbackRes.json()) as MapidActivitiesResponse;
 					if (Array.isArray(fallbackJson.data?.activities)) {
-						cachedActivities = fallbackJson.data.activities;
+						cachedActivities = fallbackJson.data.activities.map((act) => ({
+							...act,
+							medias: sortMediasPhotosFirst(act.medias || [])
+						}));
 						return cachedActivities;
 					}
 				}
@@ -159,6 +194,17 @@ export async function fetchMapidActivities(
 	})();
 
 	return activeFetchPromise;
+}
+
+export function detectTopics(title: string, description: string) {
+	const text = (title + ' ' + description).toLowerCase();
+	return {
+		topik_pkl: /pkl|pedagang|kaki lima|umkm|warung|gerobak|kuliner|dimsum|risoles|makan/i.test(text),
+		topik_trotoar: /trotoar|pejalan|jalan kaki|akses pejalan|jalur/i.test(text),
+		topik_parkir: /parkir|motor|ojek|liar|bahu jalan/i.test(text),
+		topik_qris: /qris|non-tunai|digital|cashless|debit|transfer/i.test(text),
+		topik_transit: /stasiun|mrt|halte|jaklingko|krl|transjakarta|transit/i.test(text)
+	};
 }
 
 export interface ActivityGeoJsonFeature {
@@ -175,6 +221,11 @@ export interface ActivityGeoJsonFeature {
 		medias_count: number;
 		first_media: string;
 		medias_json: string;
+		topik_pkl: boolean;
+		topik_trotoar: boolean;
+		topik_parkir: boolean;
+		topik_qris: boolean;
+		topik_transit: boolean;
 	};
 	geometry: {
 		type: 'Point';
@@ -196,25 +247,30 @@ export function activitiesToGeoJson(
 ): ActivityGeoJsonCollection {
 	return {
 		type: 'FeatureCollection',
-		features: activities.map((act) => ({
-			type: 'Feature',
-			id: act._id,
-			properties: {
+		features: activities.map((act) => {
+			const topics = detectTopics(act.title, act.description);
+			const sortedMedias = sortMediasPhotosFirst(act.medias || []);
+			return {
+				type: 'Feature',
 				id: act._id,
-				title: act.title,
-				description: act.description,
-				user_name: act.user_name,
-				user_full_name: act.user_full_name,
-				avatar: getUserAvatar(act.user_profile_picture),
-				created_at: act.created_at,
-				medias_count: (act.medias || []).length,
-				first_media: act.medias?.[0] || '',
-				medias_json: JSON.stringify(act.medias || [])
-			},
-			geometry: {
-				type: 'Point',
-				coordinates: act.geometry.coordinates
-			}
-		}))
+				properties: {
+					id: act._id,
+					title: act.title,
+					description: act.description,
+					user_name: act.user_name,
+					user_full_name: act.user_full_name,
+					avatar: getUserAvatar(act.user_profile_picture),
+					created_at: act.created_at,
+					medias_count: sortedMedias.length,
+					first_media: sortedMedias[0] || '',
+					medias_json: JSON.stringify(sortedMedias),
+					...topics
+				},
+				geometry: {
+					type: 'Point',
+					coordinates: act.geometry.coordinates
+				}
+			};
+		})
 	};
 }

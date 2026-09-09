@@ -3,6 +3,7 @@ import {
 	combineFilters,
 	highlightFilterExpression,
 	modaFilterExpression,
+	surveyFilterExpression,
 	usahaFilterExpression
 } from './filterExpr';
 
@@ -25,6 +26,35 @@ describe('usahaFilterExpression', () => {
 			'all',
 			['in', ['get', 'jenis_tempat'], ['literal', ['kaki_lima', 'gerobak']]],
 			['in', ['get', 'keramaian'], ['literal', ['ramai']]]
+		]);
+	});
+});
+
+describe('surveyFilterExpression', () => {
+	it('tanpa filter -> null', () => {
+		expect(surveyFilterExpression({ surveyTopik: [], surveyor: [] })).toBeNull();
+	});
+
+	it('filter satu topik -> klausa == topik', () => {
+		const expr = surveyFilterExpression({ surveyTopik: ['pkl'], surveyor: [] });
+		expect(expr).toEqual(['==', ['get', 'topik_pkl'], true]);
+	});
+
+	it('filter multi topik -> klausa any', () => {
+		const expr = surveyFilterExpression({ surveyTopik: ['pkl', 'trotoar'], surveyor: [] });
+		expect(expr).toEqual([
+			'any',
+			['==', ['get', 'topik_pkl'], true],
+			['==', ['get', 'topik_trotoar'], true]
+		]);
+	});
+
+	it('filter topik dan surveyor -> digabung all', () => {
+		const expr = surveyFilterExpression({ surveyTopik: ['pkl'], surveyor: ['nurhadi17'] });
+		expect(expr).toEqual([
+			'all',
+			['==', ['get', 'topik_pkl'], true],
+			['in', ['get', 'user_name'], ['literal', ['nurhadi17']]]
 		]);
 	});
 });

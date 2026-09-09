@@ -4,6 +4,8 @@ import {
 	DEFAULT_JABODETABEK_POLYGON,
 	DEFAULT_MAPID_KEY,
 	getUserAvatar,
+	isMapMediaUrl,
+	sortMediasPhotosFirst,
 	type MapidActivity
 } from './mapidActivities';
 
@@ -59,5 +61,22 @@ describe('mapidActivities service', () => {
 		expect(feat.properties.title).toBe('Observasi Trotoar Dukuh Atas');
 		expect(feat.properties.medias_count).toBe(2);
 		expect(feat.properties.first_media).toBe('https://cdn.mapid.io/img1.jpg');
+	});
+
+	it('mengurutkan media agar foto lapangan di depan dan gambar peta di paling belakang', () => {
+		const rawMedias = [
+			'https://mapid-app-chat.cdn.mapid.io/sample/map_snapshot_123.png',
+			'https://mapid-app-chat.cdn.mapid.io/sample/camera_photo_456.jpg',
+			'https://mapid-app-chat.cdn.mapid.io/sample/another_photo_789.jpeg'
+		];
+
+		const sorted = sortMediasPhotosFirst(rawMedias);
+		expect(sorted).toEqual([
+			'https://mapid-app-chat.cdn.mapid.io/sample/camera_photo_456.jpg',
+			'https://mapid-app-chat.cdn.mapid.io/sample/another_photo_789.jpeg',
+			'https://mapid-app-chat.cdn.mapid.io/sample/map_snapshot_123.png'
+		]);
+		expect(isMapMediaUrl(rawMedias[0])).toBe(true);
+		expect(isMapMediaUrl(rawMedias[1])).toBe(false);
 	});
 });

@@ -95,7 +95,7 @@ export function daftarBasemap(): BasemapPilihan[] {
 }
 
 export function basemapAwal(): BasemapPilihan {
-	return env.PUBLIC_BASEMAP_STYLE_URL ? 'mapid' : 'terang';
+	return 'satelit';
 }
 
 export function basemapStyleFor(pilihan: BasemapPilihan): string | StyleSpecification {

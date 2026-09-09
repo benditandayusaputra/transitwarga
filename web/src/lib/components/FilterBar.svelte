@@ -9,6 +9,15 @@
 	const keramaianList: Keramaian[] = ['sepi', 'sedang', 'ramai'];
 	const modaList: Moda[] = ['mrt', 'tj'];
 
+	const surveyTopikList = [
+		{ id: 'pkl', label: 'PKL & Kuliner' },
+		{ id: 'trotoar', label: 'Trotoar & Akses' },
+		{ id: 'parkir', label: 'Parkir & Ojek' },
+		{ id: 'qris', label: 'QRIS / Digital' },
+		{ id: 'transit', label: 'Stasiun & Halte' }
+	];
+
+
 	// Filter numerik (fase analitik): DuckDB menghasilkan daftar id -> filter expression.
 	let hargaMin = $state('');
 	let hargaMax = $state('');
@@ -43,8 +52,8 @@
 
 	function chipClass(active: boolean): string {
 		return active
-			? 'rounded-full bg-slate-950 px-2.5 py-1 text-xs font-extrabold text-white shadow-md transition-all'
-			: 'liquid-glass-pill px-2.5 py-1 text-xs font-extrabold text-black transition-all hover:text-black';
+			? 'rounded-full bg-slate-950 px-2.5 py-1 text-xs font-black text-white shadow-md transition-all border border-white/30'
+			: 'liquid-glass-pill px-2.5 py-1 text-xs font-extrabold text-slate-950 transition-all hover:text-slate-950';
 	}
 </script>
 
@@ -105,6 +114,26 @@
 			{/each}
 		</div>
 	</fieldset>
+
+	<fieldset>
+		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
+			Topik observasi (#Devunder)
+		</legend>
+		<div class="flex flex-wrap gap-1.5">
+			{#each surveyTopikList as t (t.id)}
+				<button
+					type="button"
+					class={chipClass(filters.surveyTopik.includes(t.id))}
+					aria-pressed={filters.surveyTopik.includes(t.id)}
+					onclick={() => filters.toggle('surveyTopik', t.id)}
+					data-testid={`filter-topik-${t.id}`}
+				>
+					{t.label}
+				</button>
+			{/each}
+		</div>
+	</fieldset>
+
 
 	<fieldset>
 		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">

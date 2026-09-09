@@ -28,7 +28,7 @@
 	});
 </script>
 
-<div class="min-w-48 p-1 text-black" data-testid="usaha-popup">
+<div class="relative z-10 min-w-48 p-1 text-black" data-testid="usaha-popup">
 	<h3 class="text-sm font-black text-black">{usaha.nama}</h3>
 	<dl class="mt-1 space-y-0.5 text-xs text-black font-extrabold">
 		<div class="flex justify-between gap-4">

@@ -79,7 +79,7 @@
 		<SearchBox />
 		<div class="flex items-start gap-2">
 			<nav
-				class="liquid-glass flex shrink-0 flex-col gap-1 rounded-2xl p-1.5 shadow-2xl"
+				class="liquid-glass flex shrink-0 flex-col gap-1 rounded-3xl p-1.5 shadow-2xl"
 				aria-label="Kontrol peta"
 			>
 				{#each TOMBOL as t (t.id)}

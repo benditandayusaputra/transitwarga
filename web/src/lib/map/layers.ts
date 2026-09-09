@@ -245,10 +245,10 @@ export function projectLayers(sourceType: SourceType = 'vector'): LayerSpecifica
 			source: 'mapid_activities',
 			paint: {
 				'circle-color': '#f59e0b',
-				'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 4.5, 12, 6.5, 15, 9.5],
+				'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 5, 12, 7.5, 15, 10.5],
 				'circle-stroke-color': '#ffffff',
-				'circle-stroke-width': 2,
-				'circle-opacity': 0.95
+				'circle-stroke-width': 2.5,
+				'circle-opacity': 1
 			}
 		},
 		{
@@ -259,15 +259,15 @@ export function projectLayers(sourceType: SourceType = 'vector'): LayerSpecifica
 			layout: {
 				'text-field': ['get', 'title'],
 				'text-font': LABEL_FONT,
-				'text-size': 11,
-				'text-offset': [0, 1.2],
+				'text-size': 11.5,
+				'text-offset': [0, 1.3],
 				'text-anchor': 'top',
-				'text-max-width': 9
+				'text-max-width': 10
 			},
 			paint: {
-				'text-color': '#b45309',
+				'text-color': '#0f172a',
 				'text-halo-color': '#ffffff',
-				'text-halo-width': 2
+				'text-halo-width': 2.5
 			}
 		}
 	];

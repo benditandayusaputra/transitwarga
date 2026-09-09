@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { cariUsaha, type HasilCariUsaha } from '$lib/db/queries';
 	import { loadAgregat } from '$lib/data/agregat';
+	import { fetchMapidActivities, type MapidActivity } from '$lib/data/mapidActivities';
 	import { JENIS_LABELS, MODA_LABELS } from '$lib/map/layers';
 	import { mapStore } from '$lib/stores/map.svelte';
 	import { masukPanel } from '$lib/utils/motion';
@@ -15,25 +16,31 @@
 		zoom: number;
 		stasiunId?: string;
 		usaha?: HasilCariUsaha;
+		activityId?: string;
 	}
 
 	let teks = $state('');
 	let hasil = $state<Hasil[]>([]);
 	let terbuka = $state(false);
 	let stasiun: AgregatKawasan[] = [];
+	let activities: MapidActivity[] = [];
 	let timer: ReturnType<typeof setTimeout> | undefined;
 
 	$effect(() => {
 		loadAgregat()
 			.then((a) => (stasiun = a.kawasan))
 			.catch(() => (stasiun = []));
+
+		fetchMapidActivities()
+			.then((acts) => (activities = acts))
+			.catch(() => (activities = []));
 	});
 
 	async function cari(q: string) {
 		const kecil = q.toLowerCase();
 		const dariStasiun: Hasil[] = stasiun
 			.filter((k) => k.nama.toLowerCase().includes(kecil))
-			.slice(0, 4)
+			.slice(0, 3)
 			.map((k) => ({
 				key: `st-${k.kawasan_id}`,
 				label: k.nama,
@@ -42,6 +49,24 @@
 				zoom: 14.5,
 				stasiunId: k.kawasan_id
 			}));
+
+		const dariObservasi: Hasil[] = activities
+			.filter(
+				(a) =>
+					a.title.toLowerCase().includes(kecil) ||
+					a.description.toLowerCase().includes(kecil) ||
+					(a.user_full_name && a.user_full_name.toLowerCase().includes(kecil))
+			)
+			.slice(0, 4)
+			.map((a) => ({
+				key: `act-${a._id}`,
+				label: a.title,
+				sub: `📍 Observasi #Devunder · ${a.user_full_name || a.user_name}`,
+				lnglat: a.geometry.coordinates,
+				zoom: 16.5,
+				activityId: a._id
+			}));
+
 		// usaha via DuckDB; bila gagal (perangkat lemah) pencarian stasiun tetap jalan
 		const dariUsaha: Hasil[] = await cariUsaha(q)
 			.then((rows) =>
@@ -55,7 +80,7 @@
 				}))
 			)
 			.catch(() => []);
-		hasil = [...dariStasiun, ...dariUsaha].slice(0, 8);
+		hasil = [...dariObservasi, ...dariStasiun, ...dariUsaha].slice(0, 8);
 		terbuka = true;
 	}
 
@@ -75,6 +100,14 @@
 		teks = '';
 		hasil = [];
 		if (r.stasiunId) mapStore.pilihKawasan(r.stasiunId);
+		if (r.activityId) {
+			mapStore.surveyTarget = {
+				lnglat: r.lnglat,
+				zoom: r.zoom,
+				activityId: r.activityId
+			};
+			return;
+		}
 		mapStore.searchTarget = {
 			lnglat: r.lnglat,
 			zoom: r.zoom,
@@ -93,7 +126,7 @@
 </script>
 
 <div class="relative w-full max-w-sm">
-	<label class="sr-only" for="cari-lokasi">Cari stasiun atau usaha</label>
+	<label class="sr-only" for="cari-lokasi">Cari stasiun, usaha, atau observasi</label>
 	<span class="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-black">
 		<Icon name="cari" size={16} />
 	</span>
@@ -101,7 +134,7 @@
 		id="cari-lokasi"
 		type="search"
 		class="liquid-glass w-full rounded-full py-2.5 pr-3 pl-9 text-sm font-extrabold text-black placeholder:text-black/70 shadow-2xl focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
-		placeholder="Cari stasiun / usaha… (mis. Blok M, soto)"
+		placeholder="Cari stasiun, usaha, observasi… (mis. Blok M, ojek)"
 		autocomplete="off"
 		bind:value={teks}
 		oninput={onInput}

@@ -4,6 +4,10 @@ class FiltersStore {
 	jenisTempat = $state<string[]>([]);
 	keramaian = $state<string[]>([]);
 	moda = $state<string[]>([]);
+	/** Filter topik observasi #Devunder: pkl, trotoar, parkir, qris, transit */
+	surveyTopik = $state<string[]>([]);
+	/** Filter surveyor lapangan */
+	surveyor = $state<string[]>([]);
 	/**
 	 * Hasil filter numerik DuckDB (fase analitik): daftar id usaha yang lolos.
 	 * null = filter numerik tidak aktif.
@@ -14,10 +18,15 @@ class FiltersStore {
 		this.jenisTempat.length > 0 ||
 			this.keramaian.length > 0 ||
 			this.moda.length > 0 ||
-			this.idWhitelist !== null
+			this.idWhitelist !== null ||
+			this.surveyTopik.length > 0 ||
+			this.surveyor.length > 0
 	);
 
-	toggle(field: 'jenisTempat' | 'keramaian' | 'moda', value: string) {
+	toggle(
+		field: 'jenisTempat' | 'keramaian' | 'moda' | 'surveyTopik' | 'surveyor',
+		value: string
+	) {
 		const current = this[field];
 		this[field] = current.includes(value)
 			? current.filter((v) => v !== value)
@@ -28,6 +37,8 @@ class FiltersStore {
 		this.jenisTempat = [];
 		this.keramaian = [];
 		this.moda = [];
+		this.surveyTopik = [];
+		this.surveyor = [];
 		this.idWhitelist = null;
 	}
 }

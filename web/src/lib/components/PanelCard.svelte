@@ -19,17 +19,17 @@
 </script>
 
 <section
-	class="liquid-glass w-72 max-w-[calc(100vw-5.5rem)] overflow-hidden rounded-2xl border border-white/70 shadow-2xl"
+	class="liquid-glass w-72 max-w-[calc(100vw-5.5rem)] overflow-hidden rounded-3xl border border-white/70 shadow-2xl"
 	aria-label={judul}
 	data-testid={testid}
 	transition:masukPanel
 >
-	<header class="flex items-center gap-2 border-b border-white/40 px-3.5 py-2.5">
+	<header class="flex items-center gap-2 border-b border-white/50 px-3.5 py-2.5">
 		<span class="text-slate-950"><Icon name={icon} size={16} /></span>
-		<h2 class="flex-1 text-xs font-extrabold tracking-wide text-black uppercase">{judul}</h2>
+		<h2 class="flex-1 text-xs font-black tracking-wide text-slate-950 uppercase">{judul}</h2>
 		<button
 			type="button"
-			class="rounded-md p-1 text-black font-bold hover:bg-white/50 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
+			class="rounded-md p-1 text-slate-950 font-bold hover:bg-white/60 focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
 			aria-label={`Tutup panel ${judul}`}
 			onclick={onTutup}
 		>
