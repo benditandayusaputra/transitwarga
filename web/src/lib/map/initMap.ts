@@ -2,6 +2,7 @@ import maplibregl, { type StyleSpecification } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { env } from '$env/dynamic/public';
 import { SOURCE_ID, projectLayers } from './layers';
+import { fetchMapidActivities, activitiesToGeoJson } from '$lib/data/mapidActivities';
 
 /**
  * Konfigurasi basemap diisolasi di sini (blueprint bag. 11): ganti style MAPID MAPS
@@ -147,6 +148,25 @@ export function checkPmtilesAvailable(): Promise<boolean> {
 /** Tambah source PMTiles / GeoJSON fallback + seluruh layer proyek (dipanggil setelah event load). */
 export async function addProjectLayers(map: maplibregl.Map): Promise<void> {
 	if (map.getSource(SOURCE_ID) || map.getSource('usaha')) return;
+
+	// Daftarkan source kegiatan/survei lapangan MAPID (#Devunder)
+	if (!map.getSource('mapid_activities')) {
+		try {
+			const activities = await fetchMapidActivities();
+			const geojson = activitiesToGeoJson(activities);
+			if (!map.getSource('mapid_activities')) {
+				map.addSource('mapid_activities', { type: 'geojson', data: geojson });
+			}
+		} catch (err) {
+			console.warn('Gagal memuat source mapid_activities:', err);
+			if (!map.getSource('mapid_activities')) {
+				map.addSource('mapid_activities', {
+					type: 'geojson',
+					data: { type: 'FeatureCollection', features: [] }
+				});
+			}
+		}
+	}
 
 	// Cek apakah tiles.pmtiles tersedia di server/static (cached)
 	const adaPmtiles = await checkPmtilesAvailable();

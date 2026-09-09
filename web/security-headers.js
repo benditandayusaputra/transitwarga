@@ -12,7 +12,9 @@ export const BASEMAP_ORIGINS = [
 	'https://tile.openstreetmap.org',
 	'https://server.arcgisonline.com',
 	'https://demotiles.maplibre.org',
-	'https://*.mapid.co.id'
+	'https://*.mapid.co.id',
+	'https://*.mapid.io',
+	'https://mapid.io'
 ];
 
 const API_ORIGINS = ['http://localhost:8787', 'https://*.workers.dev'];

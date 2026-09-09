@@ -16,6 +16,12 @@ export interface SearchTarget {
 	usaha?: UsahaRow;
 }
 
+export interface SurveyTarget {
+	lnglat: [number, number];
+	zoom: number;
+	activityId?: string;
+}
+
 class MapStore {
 	viewport = $state<Viewport>({ center: INITIAL_VIEW.center, zoom: INITIAL_VIEW.zoom });
 	kawasanAktif = $state<string | null>(null);
@@ -29,10 +35,13 @@ class MapStore {
 	basemap = $state<BasemapPilihan>(basemapAwal());
 	/** Target pencarian lokasi (dikonsumsi MapView lalu di-null-kan). */
 	searchTarget = $state<SearchTarget | null>(null);
+	/** Target titik survey (dikonsumsi MapView lalu di-null-kan). */
+	surveyTarget = $state<SurveyTarget | null>(null);
 	layerVisibility = $state<Record<LayerGroup, boolean>>({
 		kawasan_buffer: true,
 		usaha: true,
-		transit: true
+		transit: true,
+		survey: true
 	});
 	/** Baris usaha pada kawasan terpilih (untuk tabel atribut). */
 	usahaTerpilih = $state<UsahaRow[]>([]);

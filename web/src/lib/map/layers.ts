@@ -81,7 +81,9 @@ export const LAYER_IDS = {
 	usaha: 'usaha-icon',
 	usahaLabel: 'usaha-label',
 	transit: 'transit-circle',
-	transitLabel: 'transit-label'
+	transitLabel: 'transit-label',
+	survey: 'survey-circle',
+	surveyLabel: 'survey-label'
 } as const;
 
 /**
@@ -102,7 +104,8 @@ export const LAYER_GROUPS = {
 		LAYER_IDS.highlight
 	],
 	usaha: [LAYER_IDS.usaha, LAYER_IDS.usahaLabel],
-	transit: [LAYER_IDS.transit, LAYER_IDS.transitLabel]
+	transit: [LAYER_IDS.transit, LAYER_IDS.transitLabel],
+	survey: [LAYER_IDS.survey, LAYER_IDS.surveyLabel]
 } as const;
 
 export type LayerGroup = keyof typeof LAYER_GROUPS;
@@ -110,7 +113,8 @@ export type LayerGroup = keyof typeof LAYER_GROUPS;
 export const LAYER_GROUP_LABELS: Record<LayerGroup, string> = {
 	kawasan_buffer: 'Kawasan (buffer 400/800 m)',
 	usaha: 'Titik usaha',
-	transit: 'Stasiun & halte'
+	transit: 'Stasiun & halte',
+	survey: 'Survey Lapangan (#Devunder)'
 };
 
 export type SourceType = 'vector' | 'geojson';
@@ -230,6 +234,38 @@ export function projectLayers(sourceType: SourceType = 'vector'): LayerSpecifica
 			},
 			paint: {
 				'text-color': colorMatchExpression('moda', MODA_COLORS),
+				'text-halo-color': '#ffffff',
+				'text-halo-width': 2
+			}
+		},
+		// Titik observasi survey lapangan #Devunder
+		{
+			id: LAYER_IDS.survey,
+			type: 'circle',
+			source: 'mapid_activities',
+			paint: {
+				'circle-color': '#f59e0b',
+				'circle-radius': ['interpolate', ['linear'], ['zoom'], 9, 4.5, 12, 6.5, 15, 9.5],
+				'circle-stroke-color': '#ffffff',
+				'circle-stroke-width': 2,
+				'circle-opacity': 0.95
+			}
+		},
+		{
+			id: LAYER_IDS.surveyLabel,
+			type: 'symbol',
+			source: 'mapid_activities',
+			minzoom: 13,
+			layout: {
+				'text-field': ['get', 'title'],
+				'text-font': LABEL_FONT,
+				'text-size': 11,
+				'text-offset': [0, 1.2],
+				'text-anchor': 'top',
+				'text-max-width': 9
+			},
+			paint: {
+				'text-color': '#b45309',
 				'text-halo-color': '#ffffff',
 				'text-halo-width': 2
 			}

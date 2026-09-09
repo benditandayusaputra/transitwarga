@@ -17,6 +17,7 @@
 	import { loadAgregat } from '$lib/data/agregat';
 	import type { AgregatKawasan, UsahaRow } from '$lib/types';
 	import UsahaPopup from './UsahaPopup.svelte';
+	import SurveyPopup from './SurveyPopup.svelte';
 
 	let container: HTMLDivElement;
 	let map: maplibregl.Map | null = $state.raw(null);
@@ -63,17 +64,60 @@
 		popup.on('close', () => unmount(comp));
 	}
 
-	function handleClick(m: maplibregl.Map, e: maplibregl.MapMouseEvent) {
-		const feats = m.queryRenderedFeatures(e.point, {
-			layers: [
-				LAYER_IDS.usaha,
-				LAYER_IDS.usahaLabel,
-				LAYER_IDS.transit,
-				LAYER_IDS.transitLabel,
-				LAYER_IDS.bufferFill,
-				LAYER_IDS.bufferLine
-			]
+	function showSurveyPopup(m: maplibregl.Map, lngLat: maplibregl.LngLatLike, props: Record<string, unknown>) {
+		const el = document.createElement('div');
+		let medias: string[] = [];
+		try {
+			if (typeof props.medias_json === 'string') {
+				medias = JSON.parse(props.medias_json);
+			} else if (Array.isArray(props.medias)) {
+				medias = props.medias as string[];
+			}
+		} catch {
+			medias = [];
+		}
+
+		const comp = mount(SurveyPopup, {
+			target: el,
+			props: {
+				title: String(props.title ?? 'Observasi Lapangan'),
+				description: String(props.description ?? ''),
+				userName: String(props.user_name ?? ''),
+				userFullName: String(props.user_full_name ?? ''),
+				avatar: String(props.avatar ?? ''),
+				createdAt: String(props.created_at ?? ''),
+				medias
+			}
 		});
+		const popup = new maplibregl.Popup({ maxWidth: '340px', offset: 10 })
+			.setLngLat(lngLat)
+			.setDOMContent(el)
+			.addTo(m);
+		popup.on('close', () => unmount(comp));
+	}
+
+	function handleClick(m: maplibregl.Map, e: maplibregl.MapMouseEvent) {
+		const checkLayers = [
+			LAYER_IDS.survey,
+			LAYER_IDS.surveyLabel,
+			LAYER_IDS.usaha,
+			LAYER_IDS.usahaLabel,
+			LAYER_IDS.transit,
+			LAYER_IDS.transitLabel,
+			LAYER_IDS.bufferFill,
+			LAYER_IDS.bufferLine
+		].filter((id) => m.getLayer(id));
+
+		const feats = m.queryRenderedFeatures(e.point, { layers: checkLayers });
+
+		const surveyFeat = feats.find(
+			(f) => f.layer.id === LAYER_IDS.survey || f.layer.id === LAYER_IDS.surveyLabel
+		);
+		if (surveyFeat) {
+			showSurveyPopup(m, e.lngLat, surveyFeat.properties ?? {});
+			return;
+		}
+
 		const usahaFeat = feats.find(
 			(f) => f.layer.id === LAYER_IDS.usaha || f.layer.id === LAYER_IDS.usahaLabel
 		);
@@ -167,8 +211,10 @@
 			mapStore.viewport = { center: [c.lng, c.lat], zoom: m.getZoom() };
 		});
 		m.on('click', (e) => handleClick(m, e));
-		for (const id of [LAYER_IDS.usaha, LAYER_IDS.transit, LAYER_IDS.bufferFill]) {
-			m.on('mouseenter', id, () => (m.getCanvas().style.cursor = 'pointer'));
+		for (const id of [LAYER_IDS.survey, LAYER_IDS.usaha, LAYER_IDS.transit, LAYER_IDS.bufferFill]) {
+			m.on('mouseenter', id, () => {
+				if (m.getLayer(id)) m.getCanvas().style.cursor = 'pointer';
+			});
 			m.on('mouseleave', id, () => (m.getCanvas().style.cursor = ''));
 		}
 		return () => {
@@ -237,6 +283,26 @@
 			m.once('moveend', () => showUsahaPopup(m, lnglat, usaha));
 		}
 		mapStore.searchTarget = null;
+	});
+
+	// Hasil klik titik survey dari halaman /survey: terbang ke lokasi dan buka popup
+	$effect(() => {
+		const target = mapStore.surveyTarget;
+		if (!map || !target) return;
+		const m = map;
+		m.flyTo({ center: target.lnglat, zoom: target.zoom });
+		if (target.activityId) {
+			const actId = target.activityId;
+			m.once('moveend', () => {
+				const feats = m.querySourceFeatures('mapid_activities', {
+					filter: ['==', ['get', 'id'], actId]
+				});
+				if (feats.length > 0) {
+					showSurveyPopup(m, target.lnglat, feats[0].properties ?? {});
+				}
+			});
+		}
+		mapStore.surveyTarget = null;
 	});
 </script>
 

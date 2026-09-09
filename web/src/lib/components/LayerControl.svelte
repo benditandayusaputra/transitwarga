@@ -8,7 +8,8 @@
 	const GROUP_ICONS: Record<LayerGroup, IconName> = {
 		kawasan_buffer: 'layer',
 		usaha: 'pin',
-		transit: 'transit'
+		transit: 'transit',
+		survey: 'survey'
 	};
 
 	const basemaps = daftarBasemap();

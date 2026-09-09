@@ -12,7 +12,10 @@ else
 VISION_FLAG := --mock
 endif
 
-.PHONY: build-data check-tippecanoe load-db test lint format clean
+.PHONY: build-data check-tippecanoe load-db test lint format clean fetch-activities
+
+fetch-activities:
+	$(PY) fetch_activities.py
 
 build-data: check-tippecanoe
 	$(PY) 00_fixtures.py
