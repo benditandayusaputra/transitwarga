@@ -128,11 +128,15 @@ Tiga bagian repo punya nasib berbeda:
 
 ### B. Backend API ke Cloudflare Workers
 
-Prasyarat: akun Cloudflare (gratis cukup), login sekali:
+Prasyarat: akun Cloudflare (gratis cukup), login sekali, dan subdomain `workers.dev`
+(dibuat otomatis saat pertama kali membuka menu **Workers & Pages** di dashboard):
 
 ```bash
 pnpm --filter api exec wrangler login
 ```
+
+Produksi saat ini: `https://transitwarga-api.devunder.workers.dev` (KV sudah terpasang di
+`api/wrangler.toml`; anggota tim lain cukup `wrangler login` ke akun yang sama lalu langkah 2–3).
 
 1. **Buat KV namespace** (cache ringkasan + kuota harian):
    ```bash

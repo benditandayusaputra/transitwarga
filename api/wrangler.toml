@@ -2,11 +2,11 @@ name = "transitwarga-api"
 main = "src/index.ts"
 compatibility_date = "2025-10-01"
 
-# ID placeholder: wrangler dev memakai storage lokal (miniflare), ID asli
-# diisi saat deploy produksi (fase 7) lewat `wrangler kv namespace create`.
+# ID namespace KV produksi (akun Cloudflare tim); wrangler dev tetap memakai
+# storage lokal (miniflare).
 kv_namespaces = [
-  { binding = "SUMMARY_CACHE", id = "summary-cache-placeholder" },
-  { binding = "QUOTA", id = "quota-placeholder" }
+  { binding = "SUMMARY_CACHE", id = "e9383cb926f44ea986ba133b80fa0493" },
+  { binding = "QUOTA", id = "04df5c269bd44ce380c5d5b2dfd5f55f" }
 ]
 
 [[durable_objects.bindings]]
