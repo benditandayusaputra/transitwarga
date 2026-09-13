@@ -21,11 +21,13 @@
 		| 'chevron-atas'
 		| 'perbesar'
 		| 'perkecil'
-		| 'terang';
+		| 'terang'
+		| 'gelap';
 
 	let { name, size = 18 }: { name: IconName; size?: number } = $props();
 
 	const PATHS: Record<IconName, string> = {
+		gelap: 'M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z',
 		cari: 'M11 4a7 7 0 1 1 0 14 7 7 0 0 1 0-14z M20.5 20.5 16 16',
 		filter: 'M4 5h16 M7 12h10 M10 19h4',
 		layer: 'M12 3.5 21 8l-9 4.5L3 8l9-4.5z M4.5 12.5 12 16l7.5-3.5 M4.5 16.5 12 20l7.5-3.5',

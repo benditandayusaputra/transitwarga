@@ -17,7 +17,6 @@
 		{ id: 'transit', label: 'Stasiun & Halte' }
 	];
 
-
 	// Filter numerik (fase analitik): DuckDB menghasilkan daftar id -> filter expression.
 	let hargaMin = $state('');
 	let hargaMax = $state('');
@@ -134,7 +133,6 @@
 		</div>
 	</fieldset>
 
-
 	<fieldset>
 		<legend class="mb-1.5 text-[11px] font-black tracking-wide text-black uppercase">
 			Harga per porsi (Rp)
@@ -172,7 +170,9 @@
 			</button>
 		</div>
 		{#if filterHargaGagal}
-			<p class="mt-1.5 text-xs font-bold text-amber-700">Filter harga tidak tersedia di perangkat ini.</p>
+			<p class="mt-1.5 text-xs font-bold text-amber-700">
+				Filter harga tidak tersedia di perangkat ini.
+			</p>
 		{/if}
 	</fieldset>
 

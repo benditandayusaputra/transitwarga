@@ -199,7 +199,9 @@ export async function fetchMapidActivities(
 export function detectTopics(title: string, description: string) {
 	const text = (title + ' ' + description).toLowerCase();
 	return {
-		topik_pkl: /pkl|pedagang|kaki lima|umkm|warung|gerobak|kuliner|dimsum|risoles|makan/i.test(text),
+		topik_pkl: /pkl|pedagang|kaki lima|umkm|warung|gerobak|kuliner|dimsum|risoles|makan/i.test(
+			text
+		),
 		topik_trotoar: /trotoar|pejalan|jalan kaki|akses pejalan|jalur/i.test(text),
 		topik_parkir: /parkir|motor|ojek|liar|bahu jalan/i.test(text),
 		topik_qris: /qris|non-tunai|digital|cashless|debit|transfer/i.test(text),
@@ -242,9 +244,7 @@ export interface ActivityGeoJsonCollection {
  * Konversi list MapidActivity menjadi GeoJSON FeatureCollection
  * untuk dikonsumsi MapLibre GL.
  */
-export function activitiesToGeoJson(
-	activities: MapidActivity[]
-): ActivityGeoJsonCollection {
+export function activitiesToGeoJson(activities: MapidActivity[]): ActivityGeoJsonCollection {
 	return {
 		type: 'FeatureCollection',
 		features: activities.map((act) => {

@@ -33,7 +33,9 @@
 	<dl class="mt-1 space-y-0.5 text-xs text-black font-extrabold">
 		<div class="flex justify-between gap-4">
 			<dt class="font-bold text-black/80">Jenis</dt>
-			<dd class="font-black text-black">{JENIS_LABELS[usaha.jenis_tempat] ?? usaha.jenis_tempat}</dd>
+			<dd class="font-black text-black">
+				{JENIS_LABELS[usaha.jenis_tempat] ?? usaha.jenis_tempat}
+			</dd>
 		</div>
 		<div class="flex justify-between gap-4">
 			<dt class="font-bold text-black/80">Harga rata</dt>

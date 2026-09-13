@@ -44,6 +44,7 @@
 
 	// Daftar surveyor unik
 	const daftarSurveyor = $derived.by(() => {
+		// eslint-disable-next-line svelte/prefer-svelte-reactivity -- map lokal, bukan state reaktif
 		const map = new Map<string, string>();
 		for (const a of activities) {
 			if (a.user_name) {
@@ -85,13 +86,9 @@
 		}
 
 		if (sortBy === 'terbaru') {
-			res.sort(
-				(a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-			);
+			res.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 		} else if (sortBy === 'terlama') {
-			res.sort(
-				(a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-			);
+			res.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 		} else if (sortBy === 'judul') {
 			res.sort((a, b) => a.title.localeCompare(b.title, 'id'));
 		}
@@ -164,9 +161,13 @@
 	<header class="anim-masuk border-b border-slate-200 pb-6">
 		<div class="flex flex-wrap items-center justify-between gap-4">
 			<div>
-				<div class="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-900">
+				<div
+					class="inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-900"
+				>
 					<span class="relative flex h-2 w-2">
-						<span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+						<span
+							class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"
+						></span>
 						<span class="relative inline-flex h-2 w-2 rounded-full bg-emerald-500"></span>
 					</span>
 					Live MAPID Activities (#Devunder)
@@ -175,8 +176,8 @@
 					Survey &amp; Observasi Lapangan
 				</h1>
 				<p class="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-					Dokumentasi spasial hasil observasi lapangan tim <strong>#Devunder</strong> di koridor
-					stasiun MRT Jakarta &amp; halte TransJakarta: memvalidasi keramaian, lapak PKL, tata ruang trotoar,
+					Dokumentasi spasial hasil observasi lapangan tim <strong>#Devunder</strong> di koridor stasiun
+					MRT Jakarta &amp; halte TransJakarta: memvalidasi keramaian, lapak PKL, tata ruang trotoar,
 					serta adopsi QRIS.
 				</p>
 			</div>
@@ -269,7 +270,9 @@
 					placeholder="Cari tempat, trotoar, PKL, QRIS, stasiun..."
 					class="w-full rounded-xl border border-slate-300 bg-white py-2 pr-4 pl-9 text-xs font-semibold text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-900"
 				/>
-				<div class="pointer-events-none absolute inset-y-0 left-2.5 flex items-center text-slate-400">
+				<div
+					class="pointer-events-none absolute inset-y-0 left-2.5 flex items-center text-slate-400"
+				>
 					<Icon name="cari" size={15} />
 				</div>
 				{#if searchQuery}
@@ -319,6 +322,8 @@
 					<div class="shimmer h-80 rounded-2xl"></div>
 				{/each}
 			</div>
+		{:else if errorMsg}
+			<p class="mt-6 rounded-2xl bg-rose-50 p-4 text-sm font-bold text-rose-700">{errorMsg}</p>
 		{:else if filteredActivities.length === 0}
 			<div class="mt-12 rounded-2xl border border-dashed border-slate-300 p-12 text-center">
 				<p class="text-base font-bold text-slate-700">Tidak ada observasi yang sesuai</p>
@@ -337,10 +342,15 @@
 				</button>
 			</div>
 		{:else}
-			<div class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" data-testid="survey-cards">
+			<div
+				class="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+				data-testid="survey-cards"
+			>
 				{#each filteredActivities as item (item._id)}
 					{@const avatar = getUserAvatar(item.user_profile_picture)}
-					<article class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
+					<article
+						class="group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md"
+					>
 						<!-- Bagian Foto -->
 						<div class="relative h-48 w-full overflow-hidden bg-slate-100">
 							{#if item.medias && item.medias.length > 0}
@@ -356,17 +366,23 @@
 									class="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/20 group-hover:opacity-100"
 									aria-label={`Perbesar foto ${item.title}`}
 								>
-									<span class="rounded-full bg-black/60 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm">
+									<span
+										class="rounded-full bg-black/60 px-2.5 py-1 text-xs font-bold text-white backdrop-blur-sm"
+									>
 										🔎 Perbesar Foto
 									</span>
 								</button>
 								{#if item.medias.length > 1}
-									<span class="absolute top-2.5 right-2.5 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur-sm">
+									<span
+										class="absolute top-2.5 right-2.5 rounded-md bg-black/70 px-2 py-0.5 text-[11px] font-bold text-white backdrop-blur-sm"
+									>
 										📷 {item.medias.length} Foto
 									</span>
 								{/if}
 							{:else}
-								<div class="flex h-full w-full items-center justify-center text-xs font-semibold text-slate-400">
+								<div
+									class="flex h-full w-full items-center justify-center text-xs font-semibold text-slate-400"
+								>
 									Tanpa foto dokumentasi
 								</div>
 							{/if}
@@ -383,7 +399,9 @@
 										loading="lazy"
 									/>
 								{:else}
-									<div class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-[10px] font-bold text-slate-700">
+									<div
+										class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-[10px] font-bold text-slate-700"
+									>
 										{(item.user_full_name || item.user_name || 'S').slice(0, 1).toUpperCase()}
 									</div>
 								{/if}
@@ -397,17 +415,25 @@
 								</div>
 							</div>
 
-							<h2 class="mt-2.5 text-sm font-black text-slate-900 line-clamp-2 group-hover:text-amber-700 transition-colors">
+							<h2
+								class="mt-2.5 text-sm font-black text-slate-900 line-clamp-2 group-hover:text-amber-700 transition-colors"
+							>
 								{item.title}
 							</h2>
 
-							<p class="mt-1.5 flex-1 text-xs leading-relaxed text-slate-600 line-clamp-3 font-normal">
+							<p
+								class="mt-1.5 flex-1 text-xs leading-relaxed text-slate-600 line-clamp-3 font-normal"
+							>
 								{item.description}
 							</p>
 
-							<div class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px]">
+							<div
+								class="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-[11px]"
+							>
 								<span class="font-mono text-[10px] text-slate-400">
-									[{item.geometry.coordinates[0].toFixed(4)}, {item.geometry.coordinates[1].toFixed(4)}]
+									[{item.geometry.coordinates[0].toFixed(4)}, {item.geometry.coordinates[1].toFixed(
+										4
+									)}]
 								</span>
 
 								<button
@@ -424,16 +450,15 @@
 				{/each}
 			</div>
 		{/if}
-
 	{:else}
 		<!-- Tab Rencana & Protokol Survey (Dokumentasi Asli Lengkap) -->
 		<div class="anim-masuk mt-8 space-y-8">
 			<section>
 				<h2 class="text-xl font-bold text-slate-900">Tujuan</h2>
 				<p class="mt-2 text-sm leading-relaxed text-slate-600">
-					Melengkapi data mission MAPID (Menu Go, Struk Go) dengan observasi lapangan di kawasan stasiun
-					terpilih: memverifikasi keberadaan dan jenis lapak, memotret kondisi trotoar, dan mencatat jam
-					ramai — bahan validasi untuk skor friksi dan tipologi.
+					Melengkapi data mission MAPID (Menu Go, Struk Go) dengan observasi lapangan di kawasan
+					stasiun terpilih: memverifikasi keberadaan dan jenis lapak, memotret kondisi trotoar, dan
+					mencatat jam ramai — bahan validasi untuk skor friksi dan tipologi.
 				</p>
 			</section>
 
@@ -445,12 +470,12 @@
 						menu andalan, harga rata-rata per porsi, tingkat keramaian, mobilitas, dan foto.
 					</li>
 					<li>
-						<strong>Struk Go</strong> — foto struk belanja di sekitar stasiun sebagai sampel transaksi riil:
-						merchant, kategori, tanggal-jam, metode pembayaran.
+						<strong>Struk Go</strong> — foto struk belanja di sekitar stasiun sebagai sampel transaksi
+						riil: merchant, kategori, tanggal-jam, metode pembayaran.
 					</li>
 					<li>
-						<strong>Community Maps / Activities</strong> — aktivitas penataan, festival, atau kejadian relevan
-						di kawasan (judul, deskripsi, koordinat).
+						<strong>Community Maps / Activities</strong> — aktivitas penataan, festival, atau kejadian
+						relevan di kawasan (judul, deskripsi, koordinat).
 					</li>
 					<li>
 						Setiap titik dicatat dari lokasi sebenarnya (GPS aktif), pada rentang jam sibuk pagi
@@ -464,8 +489,8 @@
 				<ul class="mt-2 list-disc space-y-2 pl-5 text-sm leading-relaxed text-slate-600">
 					<li>Meminta izin pedagang sebelum memotret lapak dari dekat.</li>
 					<li>
-						Wajah dan pelat nomor di-blur pada tahap pembersihan data sebelum foto dipakai pipeline —
-						tidak ada data pribadi sensitif yang dipublikasikan.
+						Wajah dan pelat nomor di-blur pada tahap pembersihan data sebelum foto dipakai pipeline
+						— tidak ada data pribadi sensitif yang dipublikasikan.
 					</li>
 					<li>Data mentah mission tidak pernah dipublikasikan; hanya hasil olahan agregat.</li>
 				</ul>
@@ -504,13 +529,17 @@
 			aria-label="Tutup modal"
 		></button>
 
-		<div class="relative z-10 flex max-h-[92vh] max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+		<div
+			class="relative z-10 flex max-h-[92vh] max-w-4xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+		>
 			<!-- Header Modal -->
 			<div class="flex items-center justify-between border-b border-slate-100 px-4 py-3">
 				<div class="min-w-0 pr-4">
 					<h3 class="truncate text-sm font-black text-slate-900">{lightboxItem.title}</h3>
 					<p class="text-[11px] text-slate-500">
-						Oleh {lightboxItem.user_full_name || lightboxItem.user_name} • {formatTanggal(lightboxItem.created_at)}
+						Oleh {lightboxItem.user_full_name || lightboxItem.user_name} • {formatTanggal(
+							lightboxItem.created_at
+						)}
 					</p>
 				</div>
 				<button
@@ -550,7 +579,9 @@
 					>
 						›
 					</button>
-					<span class="absolute bottom-4 rounded-full bg-black/70 px-2.5 py-0.5 text-xs font-bold text-white">
+					<span
+						class="absolute bottom-4 rounded-full bg-black/70 px-2.5 py-0.5 text-xs font-bold text-white"
+					>
 						{lightboxFotoIdx + 1} / {medias.length}
 					</span>
 				{/if}
@@ -563,7 +594,9 @@
 				</p>
 				<div class="mt-3 flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
 					<span class="font-mono text-[10px] text-slate-400">
-						Koordinat: {lightboxItem.geometry.coordinates[0].toFixed(5)}, {lightboxItem.geometry.coordinates[1].toFixed(5)}
+						Koordinat: {lightboxItem.geometry.coordinates[0].toFixed(5)}, {lightboxItem.geometry.coordinates[1].toFixed(
+							5
+						)}
 					</span>
 					<button
 						type="button"

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { daftarBasemap, type BasemapPilihan } from '$lib/map/initMap';
+	import { BASEMAP_LABELS, daftarBasemap, type BasemapPilihan } from '$lib/map/initMap';
 	import { LAYER_GROUPS, LAYER_GROUP_LABELS, type LayerGroup } from '$lib/map/layers';
 	import { mapStore } from '$lib/stores/map.svelte';
 	import Icon, { type IconName } from './Icon.svelte';
@@ -13,11 +13,12 @@
 	};
 
 	const basemaps = daftarBasemap();
-	const BASEMAP_META: Record<BasemapPilihan, { label: string; icon: IconName }> = {
-		terang: { label: 'Terang', icon: 'terang' },
-		jalan: { label: 'Jalan', icon: 'jalan' },
-		satelit: { label: 'Satelit', icon: 'satelit' },
-		mapid: { label: 'MAPID', icon: 'layer' }
+	const BASEMAP_ICONS: Record<BasemapPilihan, IconName> = {
+		basic: 'jalan',
+		'street-2d-building': 'layer',
+		satellite: 'satelit',
+		dark: 'gelap',
+		light: 'terang'
 	};
 </script>
 
@@ -62,8 +63,8 @@
 					onclick={() => (mapStore.basemap = b)}
 					data-testid={`basemap-${b}`}
 				>
-					<Icon name={BASEMAP_META[b].icon} size={14} />
-					{BASEMAP_META[b].label}
+					<Icon name={BASEMAP_ICONS[b]} size={14} />
+					{BASEMAP_LABELS[b]}
 				</button>
 			{/each}
 		</div>

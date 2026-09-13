@@ -47,7 +47,9 @@
 
 <div class="relative z-10 min-w-64 max-w-80 p-1 text-slate-950" data-testid="survey-popup">
 	<div class="flex items-center gap-1.5 mb-1.5">
-		<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-950 border border-amber-400">
+		<span
+			class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-950 border border-amber-400"
+		>
 			📍 Observasi #Devunder
 		</span>
 	</div>
@@ -63,7 +65,9 @@
 				loading="lazy"
 			/>
 		{:else}
-			<div class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-bold text-white">
+			<div
+				class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-bold text-white"
+			>
 				{(userFullName || userName || 'S').slice(0, 1).toUpperCase()}
 			</div>
 		{/if}
@@ -84,7 +88,7 @@
 					href={mediaUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					aria-label={`Buka foto observasi ukuran penuh`}
+					aria-label="Buka foto observasi ukuran penuh"
 				>
 					<img
 						src={mediaUrl}
@@ -96,7 +100,9 @@
 				</a>
 
 				{#if daftarMedias.length > 1}
-					<div class="absolute bottom-1.5 right-1.5 flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+					<div
+						class="absolute bottom-1.5 right-1.5 flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
+					>
 						{#if adalahPeta}
 							<span class="mr-0.5 text-[9px] font-bold text-amber-300">🗺️ Peta</span>
 						{:else}
@@ -131,7 +137,9 @@
 		</div>
 	{/if}
 
-	<div class="mt-2.5 pt-1.5 border-t border-slate-100 flex justify-between items-center text-[11px]">
+	<div
+		class="mt-2.5 pt-1.5 border-t border-slate-100 flex justify-between items-center text-[11px]"
+	>
 		<a
 			href="/survey"
 			class="font-bold text-amber-700 hover:text-amber-800 underline underline-offset-2"

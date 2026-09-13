@@ -71,17 +71,11 @@ export interface SurveyFilterState {
 }
 
 /** Filter observasi lapangan (#Devunder) berdasarkan topik dan/atau surveyor. */
-export function surveyFilterExpression(
-	state: SurveyFilterState
-): FilterSpecification | null {
+export function surveyFilterExpression(state: SurveyFilterState): FilterSpecification | null {
 	const clauses: Expr[] = [];
 
 	if (state.surveyTopik.length > 0) {
-		const topicClauses: Expr[] = state.surveyTopik.map((t) => [
-			'==',
-			['get', `topik_${t}`],
-			true
-		]);
+		const topicClauses: Expr[] = state.surveyTopik.map((t) => ['==', ['get', `topik_${t}`], true]);
 		if (topicClauses.length === 1) {
 			clauses.push(topicClauses[0]);
 		} else {

@@ -23,10 +23,7 @@ class FiltersStore {
 			this.surveyor.length > 0
 	);
 
-	toggle(
-		field: 'jenisTempat' | 'keramaian' | 'moda' | 'surveyTopik' | 'surveyor',
-		value: string
-	) {
+	toggle(field: 'jenisTempat' | 'keramaian' | 'moda' | 'surveyTopik' | 'surveyor', value: string) {
 		const current = this[field];
 		this[field] = current.includes(value)
 			? current.filter((v) => v !== value)

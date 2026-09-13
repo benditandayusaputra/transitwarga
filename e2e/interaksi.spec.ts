@@ -66,17 +66,17 @@ test.describe('interaksi-wajib-lomba', () => {
 
   test('ganti basemap realtime; layer proyek tetap terpasang', async ({ page }) => {
     await page.getByTestId('btn-panel-layer').click();
-    await page.getByTestId('basemap-satelit').click();
+    await page.getByTestId('basemap-satellite').click();
     // getStyle() bisa undefined sesaat di tengah pergantian style
     await expect
       .poll(() => page.evaluate(() => window.__twMap.getStyle()?.name ?? ''))
-      .toBe('transitwarga-satelit');
+      .toBe('Satellite');
     await expect.poll(() => countRendered(page, 'kawasan-buffer-fill')).toBeGreaterThan(0);
 
-    await page.getByTestId('basemap-jalan').click();
+    await page.getByTestId('basemap-dark').click();
     await expect
       .poll(() => page.evaluate(() => window.__twMap.getStyle()?.name ?? ''))
-      .toBe('transitwarga-osm');
+      .toBe('Dark Mapid');
     await expect.poll(() => countRendered(page, 'kawasan-buffer-fill')).toBeGreaterThan(0);
   });
 

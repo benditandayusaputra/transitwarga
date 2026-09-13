@@ -1,7 +1,7 @@
 # TransitWarga
 
 WebGIS ekonomi informal di ekosistem transportasi massal Jakarta — MAPID WebGIS Competition 2026.
-Arsitektur static-first: PMTiles + GeoParquet + DuckDB-WASM di browser, API AI tipis di Cloudflare Workers. Lihat `docs/blueprint.pdf` dan `CLAUDE.md`.
+Arsitektur static-first: PMTiles + GeoParquet + DuckDB-WASM di browser, API AI tipis di Cloudflare Workers.
 
 ---
 
@@ -103,14 +103,80 @@ make -C pipeline lint test   # Lint & test pipeline python
 
 ## 📦 Deploy
 
-Panduan lengkap dev + deploy (Vercel, Cloudflare Workers, Turnstile, basemap MAPID, runbook demo/insiden): **[docs/deployment.md](docs/deployment.md)**.
+Tiga bagian repo punya nasib berbeda:
 
-Ringkasan:
-- **web/** → Vercel (root `vercel.json`; build `pnpm --filter web build`, output `web/build`).
-- **api/** → Cloudflare Workers: `pnpm --filter api exec wrangler deploy`.
-  Secrets via `wrangler secret put LLM_API_KEY` dsb., bukan file.
+| Bagian | Di-deploy ke | Cara |
+|---|---|---|
+| `web/` | Vercel | Import repo dari GitHub, auto-deploy tiap push ke `main` |
+| `api/` | Cloudflare Workers | `wrangler deploy` (langkah di bawah) |
+| `pipeline/` | tidak di-deploy | Jalan lokal; hasilnya (`web/static/data`, `web/static/foto`) di-commit |
 
----
+### A. Frontend ke Vercel
+
+1. [vercel.com/new](https://vercel.com/new) → Import repo GitHub `transitwarga`.
+2. **Root Directory** biarkan root repo (jangan `web/`). `vercel.json` sudah mengatur
+   install, build (`pnpm --filter web build`), output (`web/build`), dan header keamanan.
+3. Environment Variables (Production):
+   - `PUBLIC_API_BASE_URL` = URL Worker dari langkah B (mis. `https://transitwarga-api.<akun>.workers.dev`)
+   - `PUBLIC_TURNSTILE_SITE_KEY` = site key Turnstile (opsional; kosong = widget tidak tampil)
+   - `PUBLIC_MAPID_API_KEY` = key MAPID tim (sudah ada default di kode)
+4. Deploy. Setiap push ke `main` otomatis deploy ulang.
+5. Verifikasi range request PMTiles (wajib untuk layer peta):
+   ```bash
+   curl -sI -r 0-99 https://<domain-vercel>/data/tiles.pmtiles | head -3   # harus HTTP 206
+   ```
+
+### B. Backend API ke Cloudflare Workers
+
+Prasyarat: akun Cloudflare (gratis cukup), login sekali:
+
+```bash
+pnpm --filter api exec wrangler login
+```
+
+1. **Buat KV namespace** (cache ringkasan + kuota harian):
+   ```bash
+   cd api
+   pnpm exec wrangler kv namespace create SUMMARY_CACHE
+   pnpm exec wrangler kv namespace create QUOTA
+   ```
+   Salin kedua `id` yang dicetak ke `api/wrangler.toml`, menggantikan
+   `summary-cache-placeholder` dan `quota-placeholder`.
+
+2. **Pasang secrets** (tidak pernah masuk repo):
+   ```bash
+   pnpm exec wrangler secret put LLM_PROVIDER      # mis. anthropic / openai / google / groq
+   pnpm exec wrangler secret put LLM_MODEL         # mis. claude-haiku-4-5
+   pnpm exec wrangler secret put LLM_API_KEY
+   pnpm exec wrangler secret put CORS_ORIGIN       # persis origin Vercel, mis. https://transitwarga.vercel.app
+   pnpm exec wrangler secret put TURNSTILE_SECRET_KEY   # bila Turnstile dipakai
+   ```
+   Daftar variabel lain (LLM_BASE_URL, DAILY_QUOTA, dst.) ada di `api/.dev.vars.example`.
+
+3. **Deploy**:
+   ```bash
+   pnpm exec wrangler deploy
+   ```
+   Wrangler mencetak URL `https://transitwarga-api.<akun>.workers.dev`. Durable Object
+   `RateLimiter` dibuat otomatis lewat `[[migrations]]` di `wrangler.toml`.
+
+4. **Cek**:
+   ```bash
+   curl https://transitwarga-api.<akun>.workers.dev/api/health
+   # {"ok":true,"llm":{"provider":"...","model":"..."},...}
+   ```
+   Masukkan URL itu ke `PUBLIC_API_BASE_URL` di Vercel lalu redeploy web.
+
+5. **Ganti provider/model** kapan saja: ulangi `wrangler secret put LLM_*` lalu
+   `wrangler deploy` — tanpa perubahan kode.
+
+### C. Perbarui data
+
+```bash
+make -C pipeline build-data      # tulis ulang web/static/data + web/static/foto
+git add web/static && git commit -m "chore: perbarui artefak data" && git push
+```
+Push memicu deploy Vercel; `data_version` baru otomatis menginvalidasi cache ringkasan di KV.
 
 ## 🤖 Dukungan LLM
 

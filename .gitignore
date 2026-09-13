@@ -24,14 +24,15 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
-# artefak data (digenerate pipeline, tidak di-commit)
+# data mentah & antara pipeline (tidak di-commit); hasil olahan di
+# web/static/data + web/static/foto DI-COMMIT supaya ikut build Vercel
 *.pmtiles
 *.parquet
+!web/static/data/*.pmtiles
+!web/static/data/*.parquet
 pipeline/data/raw/
 pipeline/data/interim/
 pipeline/data/review/
-web/static/data/
-web/static/foto/
 
 # test & report
 coverage/

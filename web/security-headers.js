@@ -3,18 +3,20 @@
  * vite dev/preview (dipakai E2E) dan acuan nilai di vercel.json (produksi).
  *
  * CSP hanya mengizinkan origin sendiri + origin basemap + origin API +
- * Cloudflare Turnstile. Saat basemap MAPID produksi dipasang (fase deploy),
- * tambahkan origin-nya di BASEMAP_ORIGINS dan salin hasilnya ke vercel.json.
+ * Cloudflare Turnstile. Bila origin basemap berubah, ubah
+ * BASEMAP_ORIGINS di sini dan salin hasilnya ke vercel.json.
  */
 
 export const BASEMAP_ORIGINS = [
-	'https://*.basemaps.cartocdn.com',
-	'https://tile.openstreetmap.org',
-	'https://server.arcgisonline.com',
-	'https://demotiles.maplibre.org',
+	// style, tiles, glyph MAPID MAPS
 	'https://*.mapid.co.id',
 	'https://*.mapid.io',
-	'https://mapid.io'
+	'https://mapid.io',
+	// aset yang dirujuk style MAPID: sprite, relief, citra satelit
+	'https://maputnik.github.io',
+	'https://klokantech.github.io',
+	'https://api.maptiler.com',
+	'https://api.mapbox.com'
 ];
 
 const API_ORIGINS = ['http://localhost:8787', 'https://*.workers.dev'];

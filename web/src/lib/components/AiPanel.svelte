@@ -118,11 +118,16 @@
 			</div>
 		</dl>
 	{:else if summaryError}
-		<p class="mt-1.5 text-xs font-bold text-amber-700" data-testid="ai-summary-error">{summaryError}</p>
+		<p class="mt-1.5 text-xs font-bold text-amber-700" data-testid="ai-summary-error">
+			{summaryError}
+		</p>
 	{/if}
 
 	<h3 class="mt-4 text-xs font-black text-black uppercase">Tanya kebijakan</h3>
-	<ul class="liquid-glass-scroll mt-2 max-h-56 space-y-2 overflow-y-auto rounded-2xl p-1.5" data-testid="chat-messages">
+	<ul
+		class="liquid-glass-scroll mt-2 max-h-56 space-y-2 overflow-y-auto rounded-2xl p-1.5"
+		data-testid="chat-messages"
+	>
 		{#each chatStore.messages as pesan, i (i)}
 			<li
 				class={pesan.role === 'user'
@@ -175,7 +180,9 @@
 
 	{#if butuhTurnstile}
 		<TurnstileWidget onToken={(t) => (chatStore.turnstileToken = t)} />
-		<p class="text-xs font-bold text-black/70">Selesaikan verifikasi di atas untuk mulai bertanya.</p>
+		<p class="text-xs font-bold text-black/70">
+			Selesaikan verifikasi di atas untuk mulai bertanya.
+		</p>
 	{/if}
 
 	<form class="mt-2 flex gap-2" onsubmit={kirim}>

@@ -2,107 +2,46 @@ import maplibregl, { type StyleSpecification } from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { env } from '$env/dynamic/public';
 import { SOURCE_ID, projectLayers } from './layers';
-import { fetchMapidActivities, activitiesToGeoJson } from '$lib/data/mapidActivities';
+import {
+	DEFAULT_MAPID_KEY,
+	fetchMapidActivities,
+	activitiesToGeoJson
+} from '$lib/data/mapidActivities';
 
 /**
- * Konfigurasi basemap diisolasi di sini (blueprint bag. 11): ganti style MAPID MAPS
- * cukup lewat env PUBLIC_BASEMAP_STYLE_URL tanpa menyentuh kode lain.
+ * Konfigurasi basemap dipusatkan di sini (blueprint bag. 11): seluruh style
+ * berasal dari MAPID MAPS (basemap.mapid.io) memakai key tim yang sama dengan
+ * API Activities. Ganti key cukup lewat env PUBLIC_MAPID_API_KEY.
  *
- * Glyph font untuk label di-self-host (static/fonts) supaya label tetap jalan
- * offline dan lolos CSP 'self'.
+ * Glyph font untuk label layer proyek di-self-host (static/fonts) supaya label
+ * tetap jalan offline dan lolos CSP 'self'.
  */
 function glyphsUrl(): string {
 	return `${location.origin}/fonts/{fontstack}/{range}.pbf`;
 }
 
-/**
- * Basemap default dev/demo (sebelum style MAPID dipasang): raster OpenStreetMap —
- * detail penuh sampai level jalan. Produksi memakai MAPID via env.
- */
-export function localDefaultStyle(): StyleSpecification {
-	return {
-		version: 8,
-		name: 'transitwarga-osm',
-		glyphs: glyphsUrl(),
-		sources: {
-			osm: {
-				type: 'raster',
-				tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-				tileSize: 256,
-				maxzoom: 19,
-				attribution: '© OpenStreetMap contributors'
-			}
-		},
-		layers: [{ id: 'osm', type: 'raster', source: 'osm' }]
-	};
-}
+/** Pengidentifikasi style resmi MAPID MAPS (lihat katalog basemap panitia). */
+export type BasemapPilihan = 'basic' | 'street-2d-building' | 'satellite' | 'dark' | 'light';
 
-/**
- * Basemap terang bergaya dashboard (CARTO Positron) — default aplikasi:
- * netral dan kontras rendah sehingga data proyek (choropleth, marker) menonjol.
- * Resolusi tile mengikuti kerapatan layar: @2x hanya untuk layar retina supaya
- * perangkat biasa tidak mengunduh 4× piksel yang tidak terlihat.
- */
-export function cartoLightStyle(): StyleSpecification {
-	const skala = typeof devicePixelRatio !== 'undefined' && devicePixelRatio >= 1.5 ? '@2x' : '';
-	return {
-		version: 8,
-		name: 'transitwarga-terang',
-		glyphs: glyphsUrl(),
-		sources: {
-			carto: {
-				type: 'raster',
-				tiles: ['a', 'b', 'c', 'd'].map(
-					(s) => `https://${s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}${skala}.png`
-				),
-				tileSize: 256,
-				maxzoom: 19,
-				attribution: '© OpenStreetMap contributors © CARTO'
-			}
-		},
-		layers: [{ id: 'carto', type: 'raster', source: 'carto' }]
-	};
-}
+export const BASEMAP_LABELS: Record<BasemapPilihan, string> = {
+	basic: 'Street',
+	'street-2d-building': 'Street 2D',
+	satellite: 'Satelit',
+	dark: 'Gelap',
+	light: 'Terang'
+};
 
-/** Basemap citra satelit (Esri World Imagery, gratis dengan atribusi). */
-export function satelliteStyle(): StyleSpecification {
-	return {
-		version: 8,
-		name: 'transitwarga-satelit',
-		glyphs: glyphsUrl(),
-		sources: {
-			esri: {
-				type: 'raster',
-				tiles: [
-					'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
-				],
-				tileSize: 256,
-				maxzoom: 19,
-				attribution: 'Esri, Maxar, Earthstar Geographics'
-			}
-		},
-		layers: [{ id: 'esri', type: 'raster', source: 'esri' }]
-	};
-}
-
-export type BasemapPilihan = 'terang' | 'jalan' | 'satelit' | 'mapid';
-
-/** Daftar basemap yang tersedia (mapid hanya bila env style URL di-set). */
 export function daftarBasemap(): BasemapPilihan[] {
-	return env.PUBLIC_BASEMAP_STYLE_URL
-		? ['mapid', 'terang', 'jalan', 'satelit']
-		: ['terang', 'jalan', 'satelit'];
+	return ['basic', 'street-2d-building', 'satellite', 'dark', 'light'];
 }
 
 export function basemapAwal(): BasemapPilihan {
-	return 'satelit';
+	return 'basic';
 }
 
-export function basemapStyleFor(pilihan: BasemapPilihan): string | StyleSpecification {
-	if (pilihan === 'mapid' && env.PUBLIC_BASEMAP_STYLE_URL) return env.PUBLIC_BASEMAP_STYLE_URL;
-	if (pilihan === 'satelit') return satelliteStyle();
-	if (pilihan === 'jalan') return localDefaultStyle();
-	return cartoLightStyle();
+export function basemapStyleFor(pilihan: BasemapPilihan): string {
+	const key = env.PUBLIC_MAPID_API_KEY || DEFAULT_MAPID_KEY;
+	return `https://basemap.mapid.io/styles/${pilihan}/style.json?key=${key}`;
 }
 
 /**

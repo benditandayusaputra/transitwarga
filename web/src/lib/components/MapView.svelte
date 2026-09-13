@@ -66,7 +66,11 @@
 		popup.on('close', () => unmount(comp));
 	}
 
-	function showSurveyPopup(m: maplibregl.Map, lngLat: maplibregl.LngLatLike, props: Record<string, unknown>) {
+	function showSurveyPopup(
+		m: maplibregl.Map,
+		lngLat: maplibregl.LngLatLike,
+		props: Record<string, unknown>
+	) {
 		const el = document.createElement('div');
 		let medias: string[] = [];
 		try {
