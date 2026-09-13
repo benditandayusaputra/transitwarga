@@ -165,6 +165,17 @@ digest, katakan "data tidak tersedia". Jangan mengarang angka.
 ${digest}
 </digest>
 
+Arti field digest: skor_kepadatan = banyaknya usaha informal dalam 400 m;
+skor_keramaian = tingkat keramaian pembeli; skor_digital = persentase transaksi
+non-tunai (QRIS, e-wallet, kartu), nilai rendah berarti masih didominasi tunai;
+skor_friksi = seberapa jauh lapak menutup trotoar/jalur pejalan kaki ke stasiun;
+pct_digital = persen transaksi digital; n_usaha_400/n_usaha_800 = jumlah usaha
+dalam radius 400/800 m; tipologi: kuliner_matang, padat_friksi (padat dan
+menutup trotoar), potensi, prioritas_digital (ramai tapi tunai), sepi.
+Pertanyaan tentang trotoar, pejalan kaki, atau penataan lapak dijawab dari
+skor_friksi; tentang QRIS/tunai dari skor_digital; tentang ramai/sepi dari
+skor_keramaian; tentang jumlah pedagang dari skor_kepadatan. Semua skor 0-100.
+
 Konteks peta: kawasan_aktif = ${kawasanAktif ?? 'null'}.
 
 Jawab dalam bahasa Indonesia, ringkas dan berbasis angka, sesuai skema JSON
@@ -190,6 +201,15 @@ export function sanitizeAksi(
   return parsed.data;
 }
 
+/** Pesan error yang aman ditampilkan ke pengguna berdasarkan error upstream. */
+export function pesanErrorUpstream(err: unknown): string {
+  const teks = String(err);
+  if (/quota|rate.?limit|429|RESOURCE_EXHAUSTED/i.test(teks)) {
+    return 'Kuota model AI sedang habis. Coba lagi beberapa saat lagi.';
+  }
+  return 'Streaming AI terputus. Coba kirim ulang pertanyaan.';
+}
+
 export function streamPolicyChat(input: PolicyChatInput): PolicyChatResult {
   const messages: ModelMessage[] = input.messages.map((m) => ({
     role: m.role,
@@ -197,11 +217,18 @@ export function streamPolicyChat(input: PolicyChatInput): PolicyChatResult {
     content: m.role === 'user' ? `<data_pengguna>${m.content}</data_pengguna>` : m.content
   }));
 
+  // AI SDK tidak melempar error stream: dilaporkan lewat onError dan result.object
+  // menggantung. Tangkap di sini supaya rute bisa mengirim event error yang jelas.
+  let tolakError: (err: unknown) => void = () => {};
+  const errorStream = new Promise<never>((_, reject) => (tolakError = reject));
+  errorStream.catch(() => {});
+
   const result = streamObject({
     model: input.model,
     schema: chatOutputSchema,
     system: systemChat(input.digest, input.mapContext.kawasan_aktif),
-    messages
+    messages,
+    onError: ({ error }) => tolakError(error)
   });
 
   let narasiTerkirim = '';
@@ -219,14 +246,16 @@ export function streamPolicyChat(input: PolicyChatInput): PolicyChatResult {
 
   const final: Promise<ChatOutput> = (async () => {
     try {
-      const object = await result.object;
+      const object = await Promise.race([result.object, errorStream]);
       return {
         narasi: object.narasi,
         aksi_peta: sanitizeAksi(object.aksi_peta, input.knownKawasanIds)
       };
     } catch (err) {
-      // Structured output tidak valid: aksi dibuang, narasi yang sudah
-      // ter-stream tetap dipakai (blueprint bag. 11).
+      // Belum ada narasi sama sekali: model gagal (kuota, jaringan), biarkan
+      // rute mengirim event error. Bila narasi sudah ter-stream, aksi saja
+      // yang dibuang (blueprint bag. 11).
+      if (!narasiTerkirim) throw err;
       console.warn('structured output chat tidak valid, aksi dibuang:', String(err));
       return { narasi: narasiTerkirim, aksi_peta: null };
     }

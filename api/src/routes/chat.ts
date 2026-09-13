@@ -11,7 +11,7 @@ import { digestSemuaKawasan, KAWASAN_IDS } from '../data/agregat';
 import { dailyQuota } from '../middleware/dailyQuota';
 import { rateLimit } from '../middleware/rateLimit';
 import { turnstile } from '../middleware/turnstile';
-import { resolveModel, streamPolicyChat } from '../llm/provider';
+import { pesanErrorUpstream, resolveModel, streamPolicyChat } from '../llm/provider';
 import { chatRequestSchema } from '../llm/schemas';
 import type { Env } from '../env';
 
@@ -65,7 +65,7 @@ chatRoute.post(
         console.error('chat stream gagal:', String(err));
         await stream.writeSSE({
           event: 'error',
-          data: JSON.stringify({ code: 'UPSTREAM_ERROR', message: 'Streaming AI terputus' })
+          data: JSON.stringify({ code: 'UPSTREAM_ERROR', message: pesanErrorUpstream(err) })
         });
       }
     });

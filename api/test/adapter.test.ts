@@ -7,7 +7,12 @@
 import { describe, expect, it } from 'vitest';
 import { convertArrayToReadableStream, MockLanguageModelV4 } from 'ai/test';
 import type { LanguageModel } from 'ai';
-import { generateSummary, sanitizeAksi, streamPolicyChat } from '../src/llm/provider';
+import {
+  generateSummary,
+  pesanErrorUpstream,
+  sanitizeAksi,
+  streamPolicyChat
+} from '../src/llm/provider';
 import { KAWASAN } from '../src/data/agregat';
 
 const USAGE = {
@@ -105,6 +110,29 @@ describe('streamPolicyChat', () => {
     const final = await chat.final;
     expect(final.narasi).toBe('Menyorot kawasan misterius.');
     expect(final.aksi_peta).toBeNull();
+  });
+});
+
+describe('streamPolicyChat saat model gagal', () => {
+  it('provider error sebelum narasi -> final ditolak dengan pesan kuota', async () => {
+    const model = new MockLanguageModelV4({
+      doStream: async () => {
+        throw new Error('You exceeded your current quota (429 RESOURCE_EXHAUSTED)');
+      }
+    }) as unknown as LanguageModel;
+    const chat = streamPolicyChat({
+      messages: [{ role: 'user', content: 'halo' }],
+      digest: '[]',
+      mapContext: { kawasan_aktif: null },
+      knownKawasanIds: KNOWN,
+      model
+    });
+    for await (const _ of chat.deltas) {
+      // stream kosong
+    }
+    await expect(chat.final).rejects.toThrow(/quota/);
+    expect(pesanErrorUpstream(new Error('429 quota'))).toMatch(/Kuota/);
+    expect(pesanErrorUpstream(new Error('ECONNRESET'))).toMatch(/terputus/);
   });
 });
 
