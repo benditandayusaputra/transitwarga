@@ -24,6 +24,13 @@ app.use('/api/*', async (c, next) => {
 });
 app.use('/api/*', securityHeaders);
 
+app.get('/', (c) =>
+  c.json({
+    name: 'TransitWarga API',
+    endpoints: ['/api/health', '/api/summary/:kawasanId', 'POST /api/chat']
+  })
+);
+
 app.get('/api/health', (c) =>
   c.json({
     ok: true,
