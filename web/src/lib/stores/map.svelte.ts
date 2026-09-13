@@ -47,6 +47,10 @@ class MapStore {
 	usahaTerpilih = $state<UsahaRow[]>([]);
 	/** True bila detail kawasan ditampilkan sebagai dialog penuh (bukan panel pojok). */
 	detailPenuh = $state(false);
+	/** True setelah peta selesai render pertama (overlay memuat disembunyikan). */
+	mapSiap = $state(false);
+	/** Dok asisten AI terbuka. null = ikuti default: terbuka di desktop, tertutup di ponsel. */
+	asistenTerbuka = $state<boolean | null>(null);
 
 	pilihKawasan(id: string | null) {
 		this.kawasanAktif = id;

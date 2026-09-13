@@ -1,4 +1,4 @@
-/** GET /api/activities — proxy Community Maps MAPID (#Devunder).
+/** GET /api/activities: proxy Community Maps MAPID (#Devunder).
 
 server.mapid.io menolak request browser yang membawa header Origin (403),
 jadi Worker yang memanggilnya. Parameter kueri ditetapkan di sini (bukan dari

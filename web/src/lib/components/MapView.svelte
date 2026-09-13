@@ -225,7 +225,16 @@
 		}
 		m.on('style.load', setupLayers);
 		m.on('styleimagemissing', () => ensureMapIcons(m));
-		m.once('idle', () => container.setAttribute('data-map-idle', 'true'));
+		m.once('idle', () => {
+			container.setAttribute('data-map-idle', 'true');
+			mapStore.mapSiap = true;
+		});
+		// Tautan dari halaman lain (/peta?kawasan=...) langsung membuka kawasan itu.
+		const paramKawasan = new URLSearchParams(location.search).get('kawasan');
+		if (paramKawasan) {
+			mapStore.pilihKawasan(paramKawasan);
+			mapStore.zoomTarget = [paramKawasan];
+		}
 		m.on('moveend', () => {
 			const c = m.getCenter();
 			mapStore.viewport = { center: [c.lng, c.lat], zoom: m.getZoom() };
@@ -239,6 +248,7 @@
 		}
 		return () => {
 			map = null;
+			mapStore.mapSiap = false;
 			delete (window as unknown as { __twMap?: maplibregl.Map }).__twMap;
 			m.remove();
 		};

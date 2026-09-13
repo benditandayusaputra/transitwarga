@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-/* Inter variable (latin) di-self-host — lolos CSP font-src 'self', jalan offline. */
+/* Inter variable (latin) di-self-host: lolos CSP font-src 'self', jalan offline. */
 @font-face {
 	font-family: 'Inter';
 	font-style: normal;
@@ -12,26 +12,111 @@
 		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* Warna primer brand TransitWarga (biru) + tipografi — satu tempat menggantinya. */
+/*
+ * Token desain TransitWarga. Satu tempat untuk warna antarmuka; warna data
+ * (tipologi, jenis usaha) tetap di lib/map/layers.ts (Okabe-Ito).
+ */
 @theme {
 	--font-sans:
 		'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
 		sans-serif;
-	--color-primary-50: #eff6ff;
-	--color-primary-100: #dbeafe;
-	--color-primary-200: #bfdbfe;
-	--color-primary-600: #2563eb;
-	--color-primary-700: #1d4ed8;
-	--color-primary-800: #1e40af;
-	--color-primary-900: #1e3a8a;
+
+	--color-paper: #f3f5f8;
+	--color-surface: #ffffff;
+	--color-ink: #0b1f3a;
+	--color-ink-2: #3b4a5e;
+	--color-muted: #64748b;
+	--color-line: #d9dfe7;
+	--color-line-2: #eceff3;
+	--color-accent: #0b5fd1;
+	--color-accent-2: #08479e;
+	--color-accent-soft: #e8f0fc;
+	--color-signal: #d55e00;
+	--color-signal-soft: #fdeee3;
+	--color-ok: #0f7b5f;
+	--color-ok-soft: #e4f4ee;
+
+	--radius-ctl: 6px;
+	--radius-panel: 10px;
+
+	--shadow-float: 0 10px 30px -8px rgb(11 31 58 / 0.22), 0 2px 6px -2px rgb(11 31 58 / 0.12);
 }
 
-/* ---------- Motion system (halus, hormati preferensi reduced motion) ---------- */
+@layer base {
+	html {
+		color-scheme: light;
+	}
+	body {
+		background: var(--color-paper);
+		color: var(--color-ink);
+		font-feature-settings: 'cv11', 'ss01';
+		-webkit-font-smoothing: antialiased;
+	}
+	::selection {
+		background: var(--color-accent-soft);
+	}
+	:focus-visible {
+		outline: 2px solid var(--color-accent);
+		outline-offset: 2px;
+	}
+}
 
-@keyframes tw-fade-up {
+@layer components {
+	/* Kontrol dasar: tombol, input, chip. Satu bahasa untuk semua halaman. */
+	.btn {
+		@apply inline-flex h-9 items-center justify-center gap-2 rounded-[var(--radius-ctl)] border border-line bg-surface px-3.5 text-sm font-medium text-ink transition-colors hover:border-ink-2 hover:bg-line-2 disabled:pointer-events-none disabled:opacity-50;
+	}
+	.btn-primary {
+		@apply border-accent bg-accent text-white hover:border-accent-2 hover:bg-accent-2;
+	}
+	.btn-ghost {
+		@apply border-transparent bg-transparent hover:border-transparent hover:bg-line-2;
+	}
+	.btn-sm {
+		@apply h-8 px-2.5 text-[13px];
+	}
+	.input {
+		@apply h-9 w-full rounded-[var(--radius-ctl)] border border-line bg-surface px-3 text-sm text-ink placeholder:text-muted focus:border-accent focus:outline-none;
+	}
+	.chip {
+		@apply inline-flex h-7 items-center rounded-full border border-line bg-surface px-2.5 text-[12.5px] font-medium text-ink-2 transition-colors hover:border-ink-2;
+	}
+	.chip[aria-pressed='true'],
+	.chip-on {
+		@apply border-ink bg-ink text-white hover:border-ink;
+	}
+	.card {
+		@apply rounded-[var(--radius-panel)] border border-line bg-surface;
+	}
+	.panel-float {
+		@apply rounded-[var(--radius-panel)] border border-line bg-surface shadow-[var(--shadow-float)];
+	}
+	.label {
+		@apply text-[12.5px] font-medium text-muted;
+	}
+	.num {
+		@apply font-semibold text-ink tabular-nums;
+	}
+	.prose-tw {
+		@apply text-[15px] leading-7 text-ink-2;
+	}
+	.prose-tw strong {
+		@apply font-semibold text-ink;
+	}
+	.prose-tw a {
+		@apply text-accent underline underline-offset-4;
+	}
+	.prose-tw code {
+		@apply rounded bg-line-2 px-1.5 py-0.5 text-[13px] text-ink;
+	}
+}
+
+/* ---------- Motion: satu entrance terorkestrasi per halaman + respons aksi ---------- */
+
+@keyframes tw-masuk {
 	from {
 		opacity: 0;
-		transform: translateY(8px);
+		transform: translateY(10px);
 	}
 	to {
 		opacity: 1;
@@ -53,7 +138,7 @@
 	60%,
 	100% {
 		transform: translateY(0);
-		opacity: 0.4;
+		opacity: 0.35;
 	}
 	30% {
 		transform: translateY(-3px);
@@ -70,23 +155,28 @@
 	}
 }
 
-/* Konten halaman naik-halus saat dimuat */
-.anim-masuk {
-	animation: tw-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.anim-masuk-lambat {
-	animation: tw-fade-up 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-	animation-delay: 0.08s;
+@keyframes tw-progres {
+	from {
+		transform: translateX(-100%);
+	}
+	to {
+		transform: translateX(240%);
+	}
 }
 
-/* Skeleton shimmer utk keadaan memuat (ringkasan AI, dsb.) */
+/* Elemen ber-.masuk muncul berurutan; atur urutan lewat style="--i: n" */
+.masuk {
+	animation: tw-masuk 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation-delay: calc(var(--i, 0) * 70ms);
+}
+
 .shimmer {
-	background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 45%, #f1f5f9 65%);
+	background: linear-gradient(90deg, #e9edf2 25%, #f5f7fa 45%, #e9edf2 65%);
 	background-size: 200% 100%;
-	animation: tw-shimmer 1.4s linear infinite;
+	animation: tw-shimmer 1.3s linear infinite;
+	border-radius: 6px;
 }
 
-/* Tiga titik "berpikir" milik asisten AI */
 .titik-berpikir span {
 	display: inline-block;
 	width: 5px;
@@ -102,18 +192,47 @@
 	animation-delay: 0.3s;
 }
 
-/* Bar chart tumbuh dari kiri saat pertama tampil */
 .bar-tumbuh {
 	transform-origin: left center;
-	animation: tw-tumbuh 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+	animation: tw-tumbuh 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes tw-tumbuh-y {
+	from {
+		transform: scaleY(0);
+	}
+	to {
+		transform: scaleY(1);
+	}
+}
+.bar-tumbuh-y {
+	transform-origin: center bottom;
+	animation: tw-tumbuh-y 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.progres-nav {
+	position: fixed;
+	inset: 0 0 auto 0;
+	z-index: 60;
+	height: 2px;
+	overflow: hidden;
+	background: var(--color-accent-soft);
+}
+.progres-nav::after {
+	content: '';
+	display: block;
+	height: 100%;
+	width: 40%;
+	background: var(--color-accent);
+	animation: tw-progres 1s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.anim-masuk,
-	.anim-masuk-lambat,
+	.masuk,
 	.shimmer,
 	.titik-berpikir span,
-	.bar-tumbuh {
+	.bar-tumbuh,
+	.bar-tumbuh-y,
+	.progres-nav::after {
 		animation: none !important;
 	}
 	* {
@@ -121,323 +240,62 @@
 	}
 }
 
-/* Pola titik halus di hero (kesan peta) tanpa aset eksternal */
-.hero-pola {
-	background-image:
-		radial-gradient(rgb(37 99 235 / 0.09) 1.2px, transparent 1.2px),
-		linear-gradient(to bottom, var(--color-primary-50), #ffffff);
-	background-size:
-		22px 22px,
-		100% 100%;
-}
+/* ---------- Kontrol dan popup MapLibre mengikuti token yang sama ---------- */
 
-/* ---------- Polesan popup & kontrol MapLibre agar senada desain iOS Liquid Glass ---------- */
-
-/* ==========================================================================
-   Apple WWDC25 Optical Liquid Glass System
-   - Inspired directly by the WWDC25 liquid glass key visual
-   - Optical-grade transparency with 3D refractive bevel edges
-   - Arched meniscus reflection curve along the upper hemisphere
-   - Prismatic chromatic dispersion (subtle rainbow caustics) at bottom rim
-   - High-contrast typography for complete legibility over satellite maps
-   ========================================================================== */
-
-.liquid-glass {
-	position: relative;
-	isolation: isolate;
-	background:
-		radial-gradient(
-			130% 100% at 50% 0%,
-			rgba(255, 255, 255, 0.55) 0%,
-			rgba(255, 255, 255, 0.28) 42%,
-			rgba(255, 255, 255, 0.16) 72%,
-			rgba(255, 255, 255, 0.35) 100%
-		),
-		rgba(255, 255, 255, 0.48) !important;
-	backdrop-filter: blur(30px) saturate(220%) brightness(112%) contrast(106%) !important;
-	-webkit-backdrop-filter: blur(30px) saturate(220%) brightness(112%) contrast(106%) !important;
-	border: 1px solid rgba(255, 255, 255, 0.8) !important;
-	box-shadow:
-		/* Top sharp specular rim highlight */
-		inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.98),
-		/* Inner meniscus contour reflection */ inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-		/* Fresnel volumetric inner rim glow */ inset 0 0 24px 0 rgba(255, 255, 255, 0.38),
-		/* Lateral refractive edge highlights */ inset 2px 0 5px -1px rgba(255, 255, 255, 0.55),
-		inset -2px 0 5px -1px rgba(255, 255, 255, 0.45),
-		/* Bottom subtle refraction depth */ inset 0 -2px 4px 0 rgba(0, 0, 0, 0.08),
-		/* Diffused 3D float shadows */ 0 30px 70px -15px rgba(0, 0, 0, 0.42),
-		0 12px 28px -6px rgba(0, 0, 0, 0.22) !important;
+.maplibregl-ctrl-group {
+	border-radius: var(--radius-ctl) !important;
+	border: 1px solid var(--color-line) !important;
+	background: var(--color-surface) !important;
+	box-shadow: var(--shadow-float) !important;
+	overflow: hidden;
 }
-
-/* WWDC25 Curved Meniscus Specular Reflection (Top Arched Gleam) */
-.liquid-glass::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 54%;
-	background:
-		/* Arched top specular highlight */
-		radial-gradient(
-			110% 85% at 50% -12%,
-			rgba(255, 255, 255, 0.78) 0%,
-			rgba(255, 255, 255, 0.25) 45%,
-			transparent 75%
-		),
-		/* Secondary curved meniscus refraction contour */
-		radial-gradient(
-				140% 100% at 50% 120%,
-				transparent 68%,
-				rgba(255, 255, 255, 0.28) 78%,
-				transparent 88%
-			);
-	border-radius: inherit;
-	pointer-events: none;
-	z-index: 1;
+.maplibregl-ctrl-group button + button {
+	border-top: 1px solid var(--color-line-2) !important;
 }
-
-/* WWDC25 Prismatic / Chromatic Dispersion Rainbow Rim */
-.liquid-glass::after {
-	content: '';
-	position: absolute;
-	inset: 0;
-	border-radius: inherit;
-	background: linear-gradient(
-		90deg,
-		transparent 4%,
-		rgba(147, 197, 253, 0.5) 24%,
-		rgba(244, 114, 182, 0.45) 50%,
-		rgba(253, 224, 71, 0.4) 76%,
-		transparent 96%
-	);
-	mask: linear-gradient(to top, black 0%, black 2px, transparent 6px);
-	-webkit-mask: linear-gradient(to top, black 0%, black 2px, transparent 6px);
-	pointer-events: none;
-	z-index: 1;
-}
-
-.liquid-glass > * {
-	position: relative;
-	z-index: 2;
-}
-
-/* Scroll area inside glass panels */
-.liquid-glass-scroll {
-	background-image: linear-gradient(
-		135deg,
-		rgba(255, 255, 255, 0.16) 0%,
-		rgba(255, 255, 255, 0.03) 25%,
-		rgba(255, 255, 255, 0.12) 50%,
-		rgba(255, 255, 255, 0.02) 75%,
-		rgba(255, 255, 255, 0.1) 100%
-	) !important;
-	background-attachment: local !important;
-	background-size: 100% 260% !important;
-}
-
-.liquid-glass-scroll::-webkit-scrollbar {
-	width: 6px;
-	height: 6px;
-}
-.liquid-glass-scroll::-webkit-scrollbar-track {
-	background: rgba(0, 0, 0, 0.05);
-	border-radius: 9999px;
-}
-.liquid-glass-scroll::-webkit-scrollbar-thumb {
-	background: rgba(0, 0, 0, 0.35);
-	border-radius: 9999px;
-	border: 1px solid rgba(255, 255, 255, 0.7);
-}
-.liquid-glass-scroll::-webkit-scrollbar-thumb:hover {
-	background: rgba(0, 0, 0, 0.55);
-}
-
-/* Inner elements (inputs, cards, sub-panels) */
-.liquid-glass-inner {
-	position: relative;
-	background:
-		radial-gradient(
-			120% 120% at 30% 0%,
-			rgba(255, 255, 255, 0.55) 0%,
-			rgba(255, 255, 255, 0.25) 60%,
-			rgba(255, 255, 255, 0.35) 100%
-		),
-		rgba(255, 255, 255, 0.35) !important;
-	backdrop-filter: blur(20px) saturate(190%) !important;
-	-webkit-backdrop-filter: blur(20px) saturate(190%) !important;
-	border: 1px solid rgba(255, 255, 255, 0.85) !important;
-	box-shadow:
-		inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95),
-		inset 0 1px 2px 0 rgba(0, 0, 0, 0.04),
-		0 2px 6px -1px rgba(0, 0, 0, 0.08) !important;
-}
-
-/* Dark glass variation */
-.liquid-glass-dark {
-	position: relative;
-	background:
-		radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.22) 0%, transparent 50%),
-		linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.76) 100%) !important;
-	backdrop-filter: blur(30px) saturate(210%) !important;
-	-webkit-backdrop-filter: blur(30px) saturate(210%) !important;
-	border: 1px solid rgba(255, 255, 255, 0.38) !important;
-	box-shadow:
-		inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.5),
-		0 25px 50px -12px rgba(0, 0, 0, 0.55) !important;
-}
-
-/* WWDC25 Glass Pebble Pill Buttons */
-.liquid-glass-pill {
-	position: relative !important;
-	border-radius: 9999px !important;
-	background:
-		radial-gradient(
-			120% 120% at 30% 0%,
-			rgba(255, 255, 255, 0.68) 0%,
-			rgba(255, 255, 255, 0.28) 55%,
-			rgba(255, 255, 255, 0.38) 100%
-		),
-		rgba(255, 255, 255, 0.32) !important;
-	backdrop-filter: blur(22px) saturate(210%) brightness(110%) !important;
-	-webkit-backdrop-filter: blur(22px) saturate(210%) brightness(110%) !important;
-	border: 1px solid rgba(255, 255, 255, 0.82) !important;
-	box-shadow:
-		inset 0 1.2px 1.5px 0 rgba(255, 255, 255, 0.98),
-		inset 0 -1px 2px 0 rgba(0, 0, 0, 0.06),
-		0 4px 14px -2px rgba(0, 0, 0, 0.16) !important;
-	transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
-	color: #0f172a !important;
-	font-weight: 800 !important;
-}
-
-.liquid-glass-pill:hover {
-	transform: translateY(-1px) scale(1.02);
-	background:
-		radial-gradient(
-			120% 120% at 30% 0%,
-			rgba(255, 255, 255, 0.85) 0%,
-			rgba(255, 255, 255, 0.45) 60%,
-			rgba(255, 255, 255, 0.55) 100%
-		),
-		rgba(255, 255, 255, 0.45) !important;
-	box-shadow:
-		inset 0 1.5px 2px 0 rgba(255, 255, 255, 1),
-		0 8px 22px -3px rgba(0, 0, 0, 0.24) !important;
-}
-
-/* Active Luminous Glass Pebble */
-button.bg-slate-950,
-.chip-active {
-	background: linear-gradient(145deg, #090d16 0%, #1e293b 100%) !important;
-	border: 1px solid rgba(255, 255, 255, 0.35) !important;
-	box-shadow:
-		inset 0 1.2px 1.5px 0 rgba(255, 255, 255, 0.45),
-		inset 0 -1px 2px 0 rgba(0, 0, 0, 0.4),
-		0 6px 18px -2px rgba(15, 23, 42, 0.45) !important;
-}
-
-/* MapLibre Popup with Full WWDC25 Liquid Glass + Prismatic Refraction */
-.maplibregl-popup-content {
-	position: relative !important;
-	background:
-		radial-gradient(
-			130% 100% at 50% 0%,
-			rgba(255, 255, 255, 0.62) 0%,
-			rgba(255, 255, 255, 0.34) 45%,
-			rgba(255, 255, 255, 0.22) 75%,
-			rgba(255, 255, 255, 0.38) 100%
-		),
-		rgba(255, 255, 255, 0.54) !important;
-	backdrop-filter: blur(32px) saturate(220%) brightness(112%) contrast(106%) !important;
-	-webkit-backdrop-filter: blur(32px) saturate(220%) brightness(112%) contrast(106%) !important;
-	border-radius: 2rem !important;
-	border: 1px solid rgba(255, 255, 255, 0.82) !important;
-	box-shadow:
-		inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.98),
-		inset 0 0 0 1px rgba(255, 255, 255, 0.45),
-		inset 0 0 22px 0 rgba(255, 255, 255, 0.38),
-		inset 2px 0 5px -1px rgba(255, 255, 255, 0.55),
-		inset -2px 0 5px -1px rgba(255, 255, 255, 0.45),
-		inset 0 -2px 4px 0 rgba(0, 0, 0, 0.08),
-		0 30px 70px -15px rgba(0, 0, 0, 0.45),
-		0 12px 28px -6px rgba(0, 0, 0, 0.22) !important;
-	padding: 1.1rem 1.25rem !important;
+.maplibregl-ctrl-scale {
+	border-color: var(--color-ink-2) !important;
+	background: rgb(255 255 255 / 0.8) !important;
+	color: var(--color-ink) !important;
 	font-family: var(--font-sans);
-	overflow: hidden !important;
+	font-size: 11px !important;
 }
-
-.maplibregl-popup-content::before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	height: 52%;
-	background:
-		radial-gradient(
-			110% 85% at 50% -12%,
-			rgba(255, 255, 255, 0.78) 0%,
-			rgba(255, 255, 255, 0.25) 45%,
-			transparent 75%
-		),
-		radial-gradient(
-			140% 100% at 50% 120%,
-			transparent 68%,
-			rgba(255, 255, 255, 0.28) 78%,
-			transparent 88%
-		);
-	border-radius: inherit;
-	pointer-events: none;
-	z-index: 1;
+.maplibregl-ctrl-attrib {
+	font-family: var(--font-sans);
+	font-size: 11px !important;
+	background: rgb(255 255 255 / 0.85) !important;
+	color: var(--color-ink-2) !important;
 }
-
-.maplibregl-popup-content::after {
-	content: '';
-	position: absolute;
-	inset: 0;
-	border-radius: inherit;
-	background: linear-gradient(
-		90deg,
-		transparent 4%,
-		rgba(147, 197, 253, 0.5) 24%,
-		rgba(244, 114, 182, 0.45) 50%,
-		rgba(253, 224, 71, 0.4) 76%,
-		transparent 96%
-	);
-	mask: linear-gradient(to top, black 0%, black 2px, transparent 6px);
-	-webkit-mask: linear-gradient(to top, black 0%, black 2px, transparent 6px);
-	pointer-events: none;
-	z-index: 1;
+.maplibregl-popup-content {
+	border-radius: var(--radius-panel) !important;
+	border: 1px solid var(--color-line) !important;
+	background: var(--color-surface) !important;
+	box-shadow: var(--shadow-float) !important;
+	padding: 14px 16px !important;
+	font-family: var(--font-sans);
+	color: var(--color-ink);
 }
-
-.maplibregl-popup-content > * {
-	position: relative;
-	z-index: 2;
-}
-
 .maplibregl-popup-close-button {
-	font-size: 1.1rem;
-	padding: 0.2rem 0.5rem;
-	color: #000000;
-	font-weight: 800;
-	border-radius: 0.75rem;
-	transition: all 0.2s ease;
+	font-size: 18px;
+	line-height: 1;
+	padding: 6px 10px;
+	color: var(--color-muted);
+	border-radius: 0 var(--radius-panel) 0 6px;
 }
 .maplibregl-popup-close-button:hover {
-	background: rgba(0, 0, 0, 0.08);
-	color: #000000;
+	background: var(--color-line-2);
+	color: var(--color-ink);
 }
-.maplibregl-ctrl-group {
-	background:
-		radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.5) 0%, transparent 40%),
-		linear-gradient(135deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.16) 100%) !important;
-	backdrop-filter: blur(26px) saturate(210%) !important;
-	-webkit-backdrop-filter: blur(26px) saturate(210%) !important;
-	border-radius: 1.25rem !important;
-	overflow: hidden;
-	border: 1px solid rgba(255, 255, 255, 0.75) !important;
-	box-shadow:
-		inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.98),
-		0 12px 32px -5px rgba(0, 0, 0, 0.25) !important;
+.maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+	border-top-color: var(--color-surface) !important;
+}
+.maplibregl-popup-anchor-top .maplibregl-popup-tip {
+	border-bottom-color: var(--color-surface) !important;
+}
+
+/* Ponsel: toolbar peta di bawah, kontrol MapLibre naik supaya tetap terlihat */
+@media (max-width: 767px) {
+	.maplibregl-ctrl-bottom-left,
+	.maplibregl-ctrl-bottom-right {
+		bottom: 3.5rem;
+	}
 }

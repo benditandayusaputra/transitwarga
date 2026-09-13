@@ -72,11 +72,11 @@ def generate_foto(foto_dir: Path, nomor: int, nama: str, jenis: str) -> str:
         d = ImageDraw.Draw(img)
         _gambar_lapak(d, warna, variasi)
         d.text((LEBAR / 2, 62), jenis, font=_font(26), fill=warna, anchor="mm")
-        teks_nama = nama if len(nama) <= 34 else nama[:33] + "…"
+        teks_nama = nama if len(nama) <= 34 else nama[:33] + "..."
         d.text((LEBAR / 2, 436), teks_nama, font=_font(30), fill=(30, 41, 59), anchor="mm")
         d.text(
             (LEBAR / 2, 464),
-            "Foto ilustrasi — data sintetis TransitWarga",
+            "Foto ilustrasi: data sintetis TransitWarga",
             font=_font(16),
             fill=(100, 116, 139),
             anchor="mm",

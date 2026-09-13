@@ -1,6 +1,6 @@
 /** Skema Zod untuk structured output LLM (blueprint 6.3).
 
-Validasi SELALU dijalankan di sisi kita, apa pun providernya — jaminan
+Validasi SELALU dijalankan di sisi kita, apa pun providernya: jaminan
 keamanan tidak bergantung pada perilaku model.
 */
 

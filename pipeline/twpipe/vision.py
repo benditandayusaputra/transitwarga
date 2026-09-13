@@ -2,7 +2,7 @@
 
 Model vision dipilih lewat env VISION_MODEL (+ VISION_API_KEY); provider bebas
 karena LiteLLM menyeragamkan antarmuka. Mode --mock mengisi hasil deterministik
-tanpa memanggil API — dipakai CI dan dev tanpa key.
+tanpa memanggil API: dipakai CI dan dev tanpa key.
 
 Hasil: kolom ai_jenis_lapak, ai_okupansi_trotoar, ai_kondisi, ai_confidence di
 usaha.parquet; baris dengan confidence < AMBANG_REVIEW ditulis ke

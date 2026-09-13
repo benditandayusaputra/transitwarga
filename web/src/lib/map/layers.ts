@@ -1,6 +1,6 @@
 /** Definisi layer & styling tipologi (blueprint 7.2).
 
-Palet warna memakai skema Okabe-Ito (color-blind safe) — satu-satunya
+Palet warna memakai skema Okabe-Ito (color-blind safe): satu-satunya
 konstanta warna tipologi/jenis di seluruh aplikasi.
 */
 
@@ -87,7 +87,7 @@ export const LAYER_IDS = {
 } as const;
 
 /**
- * Font label — glyph di-self-host di static/fonts/. Bila style MAPID produksi
+ * Font label: glyph di-self-host di static/fonts/. Bila style MAPID produksi
  * memakai nama font lain, cukup ganti konstanta ini (lihat docs/deployment.md).
  */
 export const LABEL_FONT = ['Open Sans Semibold'];

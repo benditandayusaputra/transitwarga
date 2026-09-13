@@ -16,7 +16,7 @@ CRS_METER = "EPSG:32748"
 RADIUS_DALAM = 400
 RADIUS_LUAR = 800
 
-# Ambang tipologi rule-based (blueprint 5.1) — kalibrasi di satu tempat.
+# Ambang tipologi rule-based (blueprint 5.1): kalibrasi di satu tempat.
 AMBANG_SEPI = 25.0  # skor_kepadatan di bawah ini -> sepi
 AMBANG_PADAT = 60.0  # skor_kepadatan mulai ini -> kawasan padat
 AMBANG_FRIKSI = 60.0  # skor_friksi mulai ini (dan padat) -> padat_friksi

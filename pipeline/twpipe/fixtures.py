@@ -1,6 +1,6 @@
 """Generator data sintetis meniru skema export mission MAPID (blueprint 5.1).
 
-Data sample asli lomba diunduh manual ke pipeline/data/raw/ — file yang sudah
+Data sample asli lomba diunduh manual ke pipeline/data/raw/: file yang sudah
 ada TIDAK pernah ditimpa. Fixtures ini hanya untuk pengembangan; kolom mentah
 mengikuti gaya header export MAPID dan dipetakan ke skema standar lewat
 COLUMN_MAP di twpipe.cleaning (satu tempat penyesuaian saat data asli datang).

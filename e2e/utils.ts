@@ -44,7 +44,7 @@ export async function jumpTo(page: Page, center: [number, number], zoom: number)
 
 /**
  * Klik posisi peta berdasarkan koordinat geografis. project() MapLibre relatif
- * ke kontainer peta, sedangkan mouse Playwright memakai koordinat viewport —
+ * ke kontainer peta, sedangkan mouse Playwright memakai koordinat viewport ,
  * offset kontainer (header di atas peta) harus ditambahkan.
  */
 export async function clickLngLat(
@@ -70,13 +70,16 @@ export async function clickLngLat(
 export async function sembunyikanUsaha(page: Page, _isMobile: boolean): Promise<void> {
   await page.getByTestId('btn-panel-layer').click();
   await page.getByTestId('layer-toggle-usaha').click();
-  // tunggu sampai render benar-benar menerapkan visibility none — tanpa ini
+  // titik observasi lapangan juga bisa menutupi stasiun (prioritas klik tertinggi)
+  await page.getByTestId('layer-toggle-survey').click();
+  // tunggu sampai render benar-benar menerapkan visibility none; tanpa ini
   // klik berikutnya bisa masih mengenai ikon usaha (race render)
   await page.waitForFunction(() => {
     const m = window.__twMap;
     return (
       m.getLayoutProperty('usaha-icon', 'visibility') === 'none' &&
-      m.queryRenderedFeatures({ layers: ['usaha-icon'] } as never).length === 0
+      m.getLayoutProperty('survey-circle', 'visibility') === 'none' &&
+      m.queryRenderedFeatures({ layers: ['usaha-icon', 'survey-circle'] } as never).length === 0
     );
   });
   await page.getByTestId('btn-panel-layer').click(); // tutup panel

@@ -21,7 +21,7 @@ test.describe('interaksi-wajib-lomba', () => {
   });
 
   test('filter jenis_tempat mengubah jumlah titik ter-render', async ({ page, isMobile }) => {
-    // di layar sempit panel filter default tertutup — buka lewat toolbar
+    // di layar sempit panel filter default tertutup: buka lewat toolbar
     if (isMobile) await page.getByTestId('btn-panel-filter').click();
     await jumpTo(page, STASIUN.blokM.lnglat, 14);
     const sebelum = await countRendered(page, 'usaha-icon');
@@ -89,15 +89,16 @@ test.describe('interaksi-wajib-lomba', () => {
     for (const sel of [
       '[data-testid="search-input"]',
       'nav[aria-label="Kontrol peta"]',
+      'nav[aria-label="Kontrol peta ponsel"]',
       '[data-testid="filter-bar"]',
+      '[data-testid="asisten-dock"]',
       '.maplibregl-ctrl-top-right',
       '.maplibregl-ctrl-bottom-left',
       '.maplibregl-ctrl-bottom-right'
     ]) {
-      const bb = await page
-        .locator(sel)
-        .boundingBox()
-        .catch(() => null);
+      // page.$ tidak menunggu elemen muncul: overlay yang tidak ada dilewati
+      const el = await page.$(sel);
+      const bb = el ? await el.boundingBox() : null;
       if (bb) overlays.push(bb);
     }
     const target = await page.evaluate(

@@ -1,5 +1,5 @@
 /**
- * Header keamanan dokumen web (blueprint bag. 9) — satu sumber untuk
+ * Header keamanan dokumen web (blueprint bag. 9): satu sumber untuk
  * vite dev/preview (dipakai E2E) dan acuan nilai di web/vercel.json (produksi).
  *
  * CSP hanya mengizinkan origin sendiri + origin basemap + origin API +
@@ -29,7 +29,7 @@ export function contentSecurityPolicy({ dev = false } = {}) {
 	// ws: hanya di dev (HMR vite). 'unsafe-inline' script di header diperlukan
 	// utk satu inline script bootstrap SvelteKit; pembatasan script yang ketat
 	// (hash per halaman) dipasang SvelteKit sendiri via meta CSP (svelte.config
-	// kit.csp mode hash) — kedua policy berlaku sekaligus, yang ketat menang.
+	// kit.csp mode hash): kedua policy berlaku sekaligus, yang ketat menang.
 	const devConnect = dev ? ' ws:' : '';
 	return [
 		"default-src 'self'",

@@ -154,7 +154,7 @@ export function createMap(container: HTMLElement): maplibregl.Map {
 		if (/style|fetch|AJAX|network/i.test(pesan)) {
 			fallbackDipakai = true;
 			console.warn('Basemap gagal dimuat, memakai style fallback lokal:', pesan);
-			// diff:false — style awal belum selesai dimuat, diffing pasti gagal
+			// diff:false: style awal belum selesai dimuat, diffing pasti gagal
 			map.setStyle(fallbackStyle(), { diff: false });
 		}
 	});

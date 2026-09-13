@@ -2,7 +2,7 @@
 
 Pembentuk SQL + parameter dan transformasi hasil dipisah sebagai fungsi murni
 supaya bisa diuji tanpa worker. Semua nilai dinamis lewat parameter prepared
-statement — tanpa konkatenasi string.
+statement: tanpa konkatenasi string.
 */
 
 import { query, type Row } from './duckdb';

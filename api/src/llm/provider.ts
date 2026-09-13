@@ -105,7 +105,7 @@ angka di luar digest. Balas sesuai skema JSON yang diminta.`;
 
 /**
  * Ringkasan kawasan: narasi dari LLM (retry 1x bila output tidak valid),
- * indikator disusun deterministik dari digest — bukan dari model.
+ * indikator disusun deterministik dari digest: bukan dari model.
  */
 export async function generateSummary(
   stats: KawasanDigest,

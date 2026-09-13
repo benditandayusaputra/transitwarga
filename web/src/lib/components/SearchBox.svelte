@@ -6,7 +6,8 @@
 	import { mapStore } from '$lib/stores/map.svelte';
 	import { masukPanel } from '$lib/utils/motion';
 	import type { AgregatKawasan } from '$lib/types';
-	import Icon from './Icon.svelte';
+	import LoaderCircle from '@lucide/svelte/icons/loader-circle';
+	import Search from '@lucide/svelte/icons/search';
 
 	interface Hasil {
 		key: string;
@@ -19,9 +20,13 @@
 		activityId?: string;
 	}
 
+	/** Prefix testid; undefined = instance ini bukan yang diuji (mencegah testid ganda). */
+	let { testid }: { testid?: string } = $props();
+
 	let teks = $state('');
 	let hasil = $state<Hasil[]>([]);
 	let terbuka = $state(false);
+	let mencari = $state(false);
 	let stasiun: AgregatKawasan[] = [];
 	let activities: MapidActivity[] = [];
 	let timer: ReturnType<typeof setTimeout> | undefined;
@@ -30,13 +35,13 @@
 		loadAgregat()
 			.then((a) => (stasiun = a.kawasan))
 			.catch(() => (stasiun = []));
-
 		fetchMapidActivities()
 			.then((acts) => (activities = acts))
 			.catch(() => (activities = []));
 	});
 
 	async function cari(q: string) {
+		mencari = true;
 		const kecil = q.toLowerCase();
 		const dariStasiun: Hasil[] = stasiun
 			.filter((k) => k.nama.toLowerCase().includes(kecil))
@@ -44,7 +49,7 @@
 			.map((k) => ({
 				key: `st-${k.kawasan_id}`,
 				label: k.nama,
-				sub: `Stasiun/halte · ${MODA_LABELS[k.moda] ?? k.moda}`,
+				sub: `Stasiun atau halte, ${MODA_LABELS[k.moda] ?? k.moda}`,
 				lnglat: [k.lon, k.lat] as [number, number],
 				zoom: 14.5,
 				stasiunId: k.kawasan_id
@@ -61,13 +66,12 @@
 			.map((a) => ({
 				key: `act-${a._id}`,
 				label: a.title,
-				sub: `📍 Observasi #Devunder · ${a.user_full_name || a.user_name}`,
+				sub: `Observasi lapangan, ${a.user_full_name || a.user_name}`,
 				lnglat: a.geometry.coordinates,
 				zoom: 16.5,
 				activityId: a._id
 			}));
 
-		// usaha via DuckDB; bila gagal (perangkat lemah) pencarian stasiun tetap jalan
 		const dariUsaha: Hasil[] = await cariUsaha(q)
 			.then((rows) =>
 				rows.map((u) => ({
@@ -80,8 +84,9 @@
 				}))
 			)
 			.catch(() => []);
-		hasil = [...dariObservasi, ...dariStasiun, ...dariUsaha].slice(0, 8);
+		hasil = [...dariStasiun, ...dariUsaha, ...dariObservasi].slice(0, 8);
 		terbuka = true;
+		mencari = false;
 	}
 
 	function onInput() {
@@ -101,11 +106,7 @@
 		hasil = [];
 		if (r.stasiunId) mapStore.pilihKawasan(r.stasiunId);
 		if (r.activityId) {
-			mapStore.surveyTarget = {
-				lnglat: r.lnglat,
-				zoom: r.zoom,
-				activityId: r.activityId
-			};
+			mapStore.surveyTarget = { lnglat: r.lnglat, zoom: r.zoom, activityId: r.activityId };
 			return;
 		}
 		mapStore.searchTarget = {
@@ -125,47 +126,47 @@
 	}
 </script>
 
-<div class="relative w-full max-w-sm">
+<div class="relative w-full">
 	<label class="sr-only" for="cari-lokasi">Cari stasiun, usaha, atau observasi</label>
-	<span class="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-black">
-		<Icon name="cari" size={16} />
+	<span class="pointer-events-none absolute top-1/2 left-3 z-10 -translate-y-1/2 text-muted">
+		{#if mencari}<LoaderCircle size={15} class="animate-spin" />{:else}<Search size={15} />{/if}
 	</span>
 	<input
 		id="cari-lokasi"
 		type="search"
-		class="liquid-glass w-full rounded-full py-2.5 pr-3 pl-9 text-sm font-extrabold text-black placeholder:text-black/70 shadow-2xl focus-visible:ring-2 focus-visible:ring-slate-950 focus-visible:outline-none"
-		placeholder="Cari stasiun, usaha, observasi… (mis. Blok M, ojek)"
+		class="input pl-9 shadow-[var(--shadow-float)] md:shadow-none"
+		placeholder="Cari stasiun, usaha, atau observasi"
 		autocomplete="off"
 		bind:value={teks}
 		oninput={onInput}
 		onfocus={() => (terbuka = hasil.length > 0)}
-		data-testid="search-input"
+		data-testid={testid ? `${testid}-input` : undefined}
 	/>
 	{#if terbuka && hasil.length > 0}
 		<ul
-			class="liquid-glass liquid-glass-scroll absolute top-full right-0 left-0 z-20 mt-1.5 max-h-64 overflow-y-auto rounded-2xl border border-white/70 p-1 shadow-2xl"
+			class="panel-float absolute top-full right-0 left-0 z-20 mt-1.5 max-h-72 overflow-y-auto p-1"
 			transition:masukPanel
-			data-testid="search-results"
+			data-testid={testid ? `${testid}-results` : undefined}
 		>
 			{#each hasil as r (r.key)}
 				<li>
 					<button
 						type="button"
-						class="w-full rounded-xl px-3 py-2 text-left transition-colors hover:bg-white/50"
+						class="w-full rounded-[6px] px-3 py-2 text-left transition-colors hover:bg-line-2"
 						onclick={() => pilih(r)}
-						data-testid="search-result"
+						data-testid={testid ? `${testid}-result` : undefined}
 					>
-						<span class="block text-sm font-extrabold text-black">{r.label}</span>
-						<span class="block text-xs font-bold text-black/80">{r.sub}</span>
+						<span class="block truncate text-[13.5px] font-medium text-ink">{r.label}</span>
+						<span class="block truncate text-[12px] text-muted">{r.sub}</span>
 					</button>
 				</li>
 			{/each}
 		</ul>
 	{:else if terbuka && teks.trim().length >= 2}
 		<p
-			class="liquid-glass absolute top-full right-0 left-0 z-20 mt-1.5 rounded-xl border border-white/70 px-3 py-2 text-xs font-bold text-black shadow-2xl"
+			class="panel-float absolute top-full right-0 left-0 z-20 mt-1.5 px-3 py-2 text-[12.5px] text-muted"
 		>
-			Tidak ditemukan.
+			Tidak ada hasil untuk kata itu.
 		</p>
 	{/if}
 </div>

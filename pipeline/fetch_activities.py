@@ -62,14 +62,16 @@ def save_to_csv(activities: list[dict], output_path: Path):
             coords = act.get("geometry", {}).get("coordinates", [0, 0])
             lon, lat = coords[0], coords[1]
             created = act.get("created_at", "")[:10]
-            writer.writerow([
-                act.get("_id", ""),
-                act.get("title", ""),
-                act.get("description", "").replace("\n", " "),
-                created,
-                lat,
-                lon,
-            ])
+            writer.writerow(
+                [
+                    act.get("_id", ""),
+                    act.get("title", ""),
+                    act.get("description", "").replace("\n", " "),
+                    created,
+                    lat,
+                    lon,
+                ]
+            )
     print(f"[fetch_activities] Berhasil menyimpan {len(activities)} baris ke {output_path}")
 
 
@@ -78,7 +80,7 @@ def main():
     raw_dir = Path(__file__).resolve().parent / "data" / "raw"
     csv_file = raw_dir / "activity.csv"
 
-    print(f"Mengunduh data observasi lapangan MAPID (#Devunder)...")
+    print("Mengunduh data observasi lapangan MAPID (#Devunder)...")
     try:
         acts = fetch_activities(api_key)
         save_to_csv(acts, csv_file)

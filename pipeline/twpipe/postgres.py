@@ -1,6 +1,6 @@
 """05_load_postgres: muat artefak olahan ke PostgreSQL (opsional).
 
-Aplikasi tetap static-first (blueprint bag. 5) — database ini BUKAN dependensi
+Aplikasi tetap static-first (blueprint bag. 5): database ini BUKAN dependensi
 runtime; dipakai internal tim untuk eksplorasi (QGIS/BI/SQL) dan cadangan data
 olahan. Koneksi lewat env DATABASE_URL (atau pipeline/.env, gitignored).
 Idempoten: CREATE TABLE IF NOT EXISTS + TRUNCATE + COPY ulang.

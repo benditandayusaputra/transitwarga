@@ -1,4 +1,4 @@
-/** Kuota harian global panggilan LLM di KV (blueprint 5.3) — pengaman biaya.
+/** Kuota harian global panggilan LLM di KV (blueprint 5.3): pengaman biaya.
 
 KV tidak atomik; race kecil bisa terjadi dan itu diterima (kuota bersifat
 pengaman kasar, bukan billing).
@@ -28,7 +28,7 @@ export const dailyQuota = createMiddleware<{ Bindings: Env }>(async (c, next) =>
     return apiError(
       c,
       'QUOTA_EXCEEDED',
-      'Kuota harian AI sudah habis. Silakan coba lagi besok — peta dan analitik tetap berfungsi.'
+      'Kuota harian AI sudah habis. Silakan coba lagi besok: peta dan analitik tetap berfungsi.'
     );
   }
   return next();

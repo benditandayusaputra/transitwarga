@@ -64,6 +64,9 @@ test.describe('chat-menggerakkan-peta', () => {
     await sembunyikanUsaha(page, isMobile ?? false);
     await clickLngLat(page, STASIUN.blokM.lnglat);
     await expect(page.getByTestId('ai-panel')).toBeVisible();
+    // dok asisten terbuka otomatis di desktop; di ponsel dibuka dari panel kawasan
+    if (isMobile) await page.getByTestId('buka-asisten-dari-panel').click();
+    await expect(page.getByTestId('chat-input')).toBeVisible();
 
     // pertanyaan pertama -> narasi dirangkai dari beberapa delta + peta bergerak
     await page.getByTestId('chat-input').fill('kawasan mana yang menonjol?');

@@ -1,6 +1,6 @@
 # TransitWarga
 
-WebGIS ekonomi informal di ekosistem transportasi massal Jakarta — MAPID WebGIS Competition 2026.
+WebGIS ekonomi informal di ekosistem transportasi massal Jakarta: MAPID WebGIS Competition 2026.
 Arsitektur static-first: PMTiles + GeoParquet + DuckDB-WASM di browser, API AI tipis di Cloudflare Workers.
 
 ---
@@ -113,7 +113,7 @@ Tiga bagian repo punya nasib berbeda:
 
 ### A. Frontend ke Vercel
 
-1. [vercel.com/new](https://vercel.com/new) → Import repo GitHub `transitwarga`.
+1. [vercel.com/new](https://vercel.com/new) ke Import repo GitHub `transitwarga`.
 2. **Root Directory** = `web`. Vercel mendeteksi SvelteKit sendiri; `web/vercel.json`
    menambahkan header keamanan (CSP) dan cache untuk `/data`.
 3. Environment Variables (Production):
@@ -172,7 +172,7 @@ Produksi saat ini: `https://transitwarga-api.devunder.workers.dev` (KV sudah ter
    Masukkan URL itu ke `PUBLIC_API_BASE_URL` di Vercel lalu redeploy web.
 
 5. **Ganti provider/model** kapan saja: ulangi `wrangler secret put LLM_*` lalu
-   `wrangler deploy` — tanpa perubahan kode.
+   `wrangler deploy`: tanpa perubahan kode.
 
 ### C. Perbarui data
 

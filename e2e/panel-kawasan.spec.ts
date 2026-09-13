@@ -26,7 +26,7 @@ test.describe('panel-kawasan', () => {
     await page.goto('/peta');
     await waitMapIdle(page);
 
-    // marker ikon usaha bisa menutupi titik stasiun — sembunyikan dulu
+    // marker ikon usaha bisa menutupi titik stasiun: sembunyikan dulu
     await sembunyikanUsaha(page, isMobile ?? false);
     await clickLngLat(page, STASIUN.blokM.lnglat);
 
@@ -35,7 +35,7 @@ test.describe('panel-kawasan', () => {
     // indikator kawasan (dari agregat) tampil
     await expect(panel.locator('dl').first().locator('dd')).toHaveCount(4);
 
-    // narasi mock tampil APA ADANYA sebagai teks — tag tidak dieksekusi/disuntik
+    // narasi mock tampil APA ADANYA sebagai teks: tag tidak dieksekusi/disuntik
     const narasi = page.getByTestId('ai-summary');
     await expect(narasi).toBeVisible();
     await expect(narasi).toContainText('<script>');

@@ -274,7 +274,7 @@ def run(raw_dir: Path, ref_dir: Path, interim_dir: Path) -> dict[str, pd.DataFra
     for name, (fname, cleaner) in cleaners.items():
         src = raw_dir / fname
         if not src.exists():
-            raise FileNotFoundError(f"{src} tidak ada — jalankan 00_fixtures.py dulu")
+            raise FileNotFoundError(f"{src} tidak ada: jalankan 00_fixtures.py dulu")
         raw = pd.read_csv(src, dtype=str)
         cleaned = cleaner(raw)
         cleaned.to_parquet(interim_dir / f"{name}.parquet", index=False)

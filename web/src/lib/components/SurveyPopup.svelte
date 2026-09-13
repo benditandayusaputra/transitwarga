@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { sortMediasPhotosFirst, isMapMediaUrl } from '$lib/data/mapidActivities';
+	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
+	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 
 	interface Props {
 		title: string;
@@ -26,125 +29,102 @@
 	let fotoGagal = $state(false);
 
 	const tanggalFormatted = $derived.by(() => {
-		try {
-			const d = new Date(createdAt);
-			if (isNaN(d.getTime())) return createdAt;
-			return d.toLocaleDateString('id-ID', {
-				day: 'numeric',
-				month: 'short',
-				year: 'numeric',
-				hour: '2-digit',
-				minute: '2-digit'
-			});
-		} catch {
-			return createdAt;
-		}
+		const d = new Date(createdAt);
+		if (isNaN(d.getTime())) return createdAt;
+		return d.toLocaleDateString('id-ID', {
+			day: 'numeric',
+			month: 'short',
+			year: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
 	});
 
 	const mediaUrl = $derived(daftarMedias[fotoAktifIndex] ?? '');
 	const adalahPeta = $derived(isMapMediaUrl(mediaUrl));
 </script>
 
-<div class="relative z-10 min-w-64 max-w-80 p-1 text-slate-950" data-testid="survey-popup">
-	<div class="flex items-center gap-1.5 mb-1.5">
-		<span
-			class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-950 border border-amber-400"
-		>
-			📍 Observasi #Devunder
-		</span>
-	</div>
+<div class="min-w-64 max-w-80 pr-3" data-testid="survey-popup">
+	<p class="text-[11.5px] font-medium text-[#b45309]">Observasi lapangan Devunder</p>
+	<h3 class="mt-0.5 text-[14px] leading-snug font-semibold text-ink">{title}</h3>
 
-	<h3 class="text-sm font-black leading-snug text-slate-950">{title}</h3>
-
-	<div class="mt-2 flex items-center gap-2 border-y border-slate-200 py-1.5">
+	<div class="mt-2 flex items-center gap-2 border-y border-line-2 py-1.5">
 		{#if avatar}
 			<img
 				src={avatar}
 				alt={userFullName || userName}
-				class="h-6 w-6 rounded-full object-cover border border-slate-300"
+				class="h-6 w-6 rounded-full border border-line object-cover"
 				loading="lazy"
 			/>
 		{:else}
-			<div
-				class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-800 text-[10px] font-bold text-white"
+			<span
+				class="grid h-6 w-6 place-items-center rounded-full bg-ink text-[10px] font-semibold text-white"
 			>
 				{(userFullName || userName || 'S').slice(0, 1).toUpperCase()}
-			</div>
+			</span>
 		{/if}
-		<div class="min-w-0 flex-1 text-[11px]">
-			<p class="truncate font-black text-slate-950">{userFullName || userName}</p>
-			<p class="text-[10px] font-bold text-slate-600">{tanggalFormatted}</p>
+		<div class="min-w-0 flex-1 text-[11.5px]">
+			<p class="truncate font-medium text-ink">{userFullName || userName}</p>
+			<p class="text-muted">{tanggalFormatted}</p>
 		</div>
 	</div>
 
-	<p class="mt-2 text-xs leading-relaxed text-slate-800 line-clamp-4 font-semibold">
-		{description}
-	</p>
+	<p class="mt-2 line-clamp-4 text-[12.5px] leading-5 text-ink-2">{description}</p>
 
 	{#if daftarMedias.length > 0 && !fotoGagal}
-		<div class="mt-2.5">
-			<div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-				<a
-					href={mediaUrl}
-					target="_blank"
-					rel="noopener noreferrer"
-					aria-label="Buka foto observasi ukuran penuh"
+		<div class="relative mt-2.5 overflow-hidden rounded-[6px] border border-line bg-line-2">
+			<a
+				href={mediaUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label="Buka foto observasi ukuran penuh"
+			>
+				<img
+					src={mediaUrl}
+					alt={title}
+					class="h-36 w-full object-cover"
+					loading="lazy"
+					onerror={() => (fotoGagal = true)}
+				/>
+			</a>
+			{#if daftarMedias.length > 1}
+				<div
+					class="absolute right-1.5 bottom-1.5 flex items-center gap-0.5 rounded-[6px] bg-ink/80 px-1 py-0.5 text-[11px] font-medium text-white"
 				>
-					<img
-						src={mediaUrl}
-						alt={title}
-						class="h-36 w-full object-cover transition-transform hover:scale-105 duration-200"
-						loading="lazy"
-						onerror={() => (fotoGagal = true)}
-					/>
-				</a>
-
-				{#if daftarMedias.length > 1}
-					<div
-						class="absolute bottom-1.5 right-1.5 flex items-center gap-1 rounded-md bg-black/70 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm"
+					<button
+						type="button"
+						class="rounded px-1 hover:bg-white/20"
+						onclick={(e) => {
+							e.stopPropagation();
+							fotoAktifIndex = (fotoAktifIndex - 1 + daftarMedias.length) % daftarMedias.length;
+						}}
+						aria-label="Foto sebelumnya"
 					>
-						{#if adalahPeta}
-							<span class="mr-0.5 text-[9px] font-bold text-amber-300">🗺️ Peta</span>
-						{:else}
-							<span class="mr-0.5 text-[9px] font-bold text-emerald-300">📷 Foto</span>
-						{/if}
-						<span>{fotoAktifIndex + 1}/{daftarMedias.length}</span>
-						<button
-							type="button"
-							class="hover:text-amber-300 ml-1 px-0.5 font-bold"
-							onclick={(e) => {
-								e.stopPropagation();
-								fotoAktifIndex = (fotoAktifIndex - 1 + daftarMedias.length) % daftarMedias.length;
-							}}
-							aria-label="Foto sebelumnya"
-						>
-							‹
-						</button>
-						<button
-							type="button"
-							class="hover:text-amber-300 px-0.5 font-bold"
-							onclick={(e) => {
-								e.stopPropagation();
-								fotoAktifIndex = (fotoAktifIndex + 1) % daftarMedias.length;
-							}}
-							aria-label="Foto berikutnya"
-						>
-							›
-						</button>
-					</div>
-				{/if}
-			</div>
+						<ChevronLeft size={13} />
+					</button>
+					<span class="px-0.5"
+						>{adalahPeta ? 'Peta' : 'Foto'} {fotoAktifIndex + 1}/{daftarMedias.length}</span
+					>
+					<button
+						type="button"
+						class="rounded px-1 hover:bg-white/20"
+						onclick={(e) => {
+							e.stopPropagation();
+							fotoAktifIndex = (fotoAktifIndex + 1) % daftarMedias.length;
+						}}
+						aria-label="Foto berikutnya"
+					>
+						<ChevronRight size={13} />
+					</button>
+				</div>
+			{/if}
 		</div>
 	{/if}
 
-	<div
-		class="mt-2.5 pt-1.5 border-t border-slate-100 flex justify-between items-center text-[11px]"
+	<a
+		href="/survey"
+		class="mt-2.5 inline-flex items-center gap-1 text-[12px] font-medium text-accent"
 	>
-		<a
-			href="/survey"
-			class="font-bold text-amber-700 hover:text-amber-800 underline underline-offset-2"
-		>
-			Lihat di Daftar Survey →
-		</a>
-	</div>
+		Lihat semua observasi <ArrowRight size={12} />
+	</a>
 </div>

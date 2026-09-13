@@ -2,7 +2,7 @@
 
 - *.parquet final (usaha, transaksi, aktivitas, properti, kawasan)
 - tiles.pmtiles via tippecanoe + tile-join (layer: kawasan_buffer z8-16,
-  usaha z12-18, transit z8-18 — blueprint 5.2; pejalan_kaki opsional menyusul)
+  usaha z12-18, transit z8-18: blueprint 5.2; pejalan_kaki opsional menyusul)
 - agregat.json (array ringkas_stats + data_version tanggal build)
 """
 
@@ -150,4 +150,3 @@ def run(
         print("[export] build tiles dilewati (--skip-tiles)")
         return
     build_tiles(interim_dir, web_data_dir / "tiles.pmtiles")
-

@@ -1,4 +1,4 @@
-/** Transisi Svelte terpusat — halus, singkat, dan hormat pada reduced motion. */
+/** Transisi Svelte terpusat: halus, singkat, dan hormat pada reduced motion. */
 
 import { cubicOut } from 'svelte/easing';
 import { fade, fly, scale, type TransitionConfig } from 'svelte/transition';

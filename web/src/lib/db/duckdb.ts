@@ -5,7 +5,7 @@ numerik, atau buka detail popup). File parquet diregister via HTTP sehingga
 DuckDB membaca per-range, bukan mengunduh utuh.
 
 Bundel wasm/worker di-serve dari origin sendiri (?url) supaya cocok dengan CSP
-ketat — tanpa CDN pihak ketiga.
+ketat: tanpa CDN pihak ketiga.
 */
 
 import type { AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
@@ -21,7 +21,7 @@ const TABLES = ['usaha', 'transaksi', 'aktivitas', 'properti', 'kawasan'] as con
 
 /**
  * Batas waktu inisialisasi. Worker yang gagal dimuat bisa membuat init
- * menggantung tanpa error — timeout memastikan fallback agregat tetap terpicu
+ * menggantung tanpa error: timeout memastikan fallback agregat tetap terpicu
  * (blueprint bag. 11: perangkat lemah).
  */
 const INIT_TIMEOUT_MS = 12_000;
@@ -71,7 +71,7 @@ async function initConnection(): Promise<AsyncDuckDBConnection> {
 	}
 	const conn = await db.connect();
 	// Ekstensi parquet di-self-host (static/duckdb-ext) supaya berjalan offline
-	// dan lolos CSP connect-src 'self' — tanpa menyentuh extensions.duckdb.org.
+	// dan lolos CSP connect-src 'self': tanpa menyentuh extensions.duckdb.org.
 	await conn.query(`SET custom_extension_repository='${location.origin}/duckdb-ext'`);
 	await conn.query('INSTALL parquet');
 	await conn.query('LOAD parquet');

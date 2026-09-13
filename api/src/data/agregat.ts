@@ -1,4 +1,4 @@
-/** Digest agregat (dibundel bersama Worker saat deploy) — satu-satunya sumber
+/** Digest agregat (dibundel bersama Worker saat deploy): satu-satunya sumber
 fakta untuk prompt AI (blueprint 6.2 & 6.3). Digenerate ulang oleh pipeline
 (04_export.py) ke src/generated/agregat.json. */
 

@@ -1,6 +1,6 @@
 /** Durable Object: sliding window rate limiter per IP (blueprint 5.3).
 
-Satu objek per IP (idFromName). Stateful sehingga akurat — tidak bisa
+Satu objek per IP (idFromName). Stateful sehingga akurat: tidak bisa
 dibohongi retry paralel. Timestamps disimpan di storage agar tahan restart.
 */
 
