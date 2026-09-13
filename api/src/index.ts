@@ -2,6 +2,7 @@ import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { DATA_VERSION } from './data/agregat';
 import { securityHeaders } from './middleware/securityHeaders';
+import { activitiesRoute } from './routes/activities';
 import { chatRoute } from './routes/chat';
 import { summaryRoute } from './routes/summary';
 import type { Env } from './env';
@@ -27,7 +28,7 @@ app.use('/api/*', securityHeaders);
 app.get('/', (c) =>
   c.json({
     name: 'TransitWarga API',
-    endpoints: ['/api/health', '/api/summary/:kawasanId', 'POST /api/chat']
+    endpoints: ['/api/health', '/api/summary/:kawasanId', 'POST /api/chat', '/api/activities']
   })
 );
 
@@ -44,5 +45,6 @@ app.get('/api/health', (c) =>
 
 app.route('/', summaryRoute);
 app.route('/', chatRoute);
+app.route('/', activitiesRoute);
 
 export default app;

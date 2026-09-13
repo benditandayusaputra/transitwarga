@@ -6,7 +6,7 @@
  * (/data/survey_activities.json) jika offline atau gagal koneksi.
  */
 
-import { env } from '$env/dynamic/public';
+import { apiBase } from '$lib/ai/api';
 
 export interface MapidUserProfilePic {
 	name?: string;
@@ -55,17 +55,6 @@ export interface MapidActivitiesResponse {
 
 export const DEFAULT_MAPID_KEY = '6a919d9453df37905b3a5d49';
 
-/** Poligon cakupan area Jabodetabek (sesuai koridor transit & batas wajar koordinat). */
-export const DEFAULT_JABODETABEK_POLYGON = [
-	[
-		[106.3, -7.0],
-		[107.3, -7.0],
-		[107.3, -5.9],
-		[106.3, -5.9],
-		[106.3, -7.0]
-	]
-];
-
 export function getUserAvatar(pic?: string | MapidUserProfilePic | unknown): string {
 	if (!pic) return '';
 	if (typeof pic === 'string') return pic;
@@ -80,11 +69,6 @@ let cachedActivities: MapidActivity[] | null = null;
 let activeFetchPromise: Promise<MapidActivity[]> | null = null;
 
 export interface FetchActivitiesOptions {
-	apiKey?: string;
-	hashtag?: string[];
-	polygon?: number[][][];
-	startDate?: string;
-	endDate?: string;
 	forceRefresh?: boolean;
 }
 
@@ -132,30 +116,11 @@ export async function fetchMapidActivities(
 		return activeFetchPromise;
 	}
 
-	const apiKey = options.apiKey || env.PUBLIC_MAPID_API_KEY || DEFAULT_MAPID_KEY;
-	const hashtag = options.hashtag ?? ['Devunder'];
-	const polygon = options.polygon ?? DEFAULT_JABODETABEK_POLYGON;
-	const startDate = options.startDate ?? '2024-01-01';
-	const endDate = options.endDate ?? '2026-12-31';
-
 	activeFetchPromise = (async () => {
 		try {
-			const res = await fetch('https://server.mapid.io/web/competition/activities', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					'x-api-key': apiKey
-				},
-				body: JSON.stringify({
-					feature: {
-						type: 'Polygon',
-						coordinates: polygon
-					},
-					start_date: startDate,
-					end_date: endDate,
-					hashtag
-				})
-			});
+			// server.mapid.io menolak request browser (403 bila ada header Origin),
+			// jadi lewat proxy Worker yang menyimpan kueri #Devunder + key tim.
+			const res = await fetch(`${apiBase()}/api/activities`);
 
 			if (!res.ok) {
 				throw new Error(`MAPID API error: ${res.status} ${res.statusText}`);

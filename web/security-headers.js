@@ -1,10 +1,10 @@
 /**
  * Header keamanan dokumen web (blueprint bag. 9) — satu sumber untuk
- * vite dev/preview (dipakai E2E) dan acuan nilai di vercel.json (produksi).
+ * vite dev/preview (dipakai E2E) dan acuan nilai di web/vercel.json (produksi).
  *
  * CSP hanya mengizinkan origin sendiri + origin basemap + origin API +
  * Cloudflare Turnstile. Bila origin basemap berubah, ubah
- * BASEMAP_ORIGINS di sini dan salin hasilnya ke vercel.json.
+ * BASEMAP_ORIGINS di sini dan salin hasilnya ke web/vercel.json.
  */
 
 export const BASEMAP_ORIGINS = [

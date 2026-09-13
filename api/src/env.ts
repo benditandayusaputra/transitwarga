@@ -13,6 +13,8 @@ export interface Env {
   LLM_BASE_URL?: string;
   TURNSTILE_SECRET_KEY?: string;
   TURNSTILE_DEV_BYPASS?: string;
+  /** Key MAPID untuk proxy Community Maps (default: key tim). */
+  MAPID_API_KEY?: string;
   /** Origin frontend produksi (untuk CORS), mis. https://transitwarga.vercel.app */
   CORS_ORIGIN?: string;
   /** Batas panggilan LLM per hari (global). Default 300. */

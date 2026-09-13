@@ -114,8 +114,8 @@ Tiga bagian repo punya nasib berbeda:
 ### A. Frontend ke Vercel
 
 1. [vercel.com/new](https://vercel.com/new) → Import repo GitHub `transitwarga`.
-2. **Root Directory** biarkan root repo (jangan `web/`). `vercel.json` sudah mengatur
-   install, build (`pnpm --filter web build`), output (`web/build`), dan header keamanan.
+2. **Root Directory** = `web`. Vercel mendeteksi SvelteKit sendiri; `web/vercel.json`
+   menambahkan header keamanan (CSP) dan cache untuk `/data`.
 3. Environment Variables (Production):
    - `PUBLIC_API_BASE_URL` = URL Worker dari langkah B (mis. `https://transitwarga-api.<akun>.workers.dev`)
    - `PUBLIC_TURNSTILE_SITE_KEY` = site key Turnstile (opsional; kosong = widget tidak tampil)

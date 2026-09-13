@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
 	activitiesToGeoJson,
-	DEFAULT_JABODETABEK_POLYGON,
 	DEFAULT_MAPID_KEY,
 	getUserAvatar,
 	isMapMediaUrl,
@@ -12,8 +11,6 @@ import {
 describe('mapidActivities service', () => {
 	it('memiliki API key dan polygon default', () => {
 		expect(DEFAULT_MAPID_KEY).toBe('6a919d9453df37905b3a5d49');
-		expect(DEFAULT_JABODETABEK_POLYGON).toHaveLength(1);
-		expect(DEFAULT_JABODETABEK_POLYGON[0]).toHaveLength(5);
 	});
 
 	it('ekstraksi avatar pengguna menangani string, object, dan undefined', () => {
