@@ -39,6 +39,32 @@
 	 */
 	const tampilAside = $derived(!browser || desktop);
 
+	/** Lebar sidebar desktop; ditarik dari tepi kanan seperti sidebar VS Code. */
+	let lebarSidebar = $state(320);
+	const LEBAR_MIN = 260;
+	const LEBAR_MAKS = 640;
+	let menarik = $state(false);
+	function mulaiTarik(e: PointerEvent) {
+		e.preventDefault();
+		const awalX = e.clientX;
+		const lebarAwal = lebarSidebar;
+		const el = e.currentTarget as HTMLElement;
+		el.setPointerCapture(e.pointerId);
+		menarik = true;
+		const gerak = (ev: PointerEvent) => {
+			lebarSidebar = Math.min(LEBAR_MAKS, Math.max(LEBAR_MIN, lebarAwal + ev.clientX - awalX));
+		};
+		const selesai = () => {
+			menarik = false;
+			el.removeEventListener('pointermove', gerak);
+			el.removeEventListener('pointerup', selesai);
+			el.removeEventListener('pointercancel', selesai);
+		};
+		el.addEventListener('pointermove', gerak);
+		el.addEventListener('pointerup', selesai);
+		el.addEventListener('pointercancel', selesai);
+	}
+
 	function togglePanel(p: Panel) {
 		panelAktif = efektifPanel === p ? null : p;
 	}
@@ -79,9 +105,21 @@
 <div class="flex h-[calc(100dvh-3.5rem)] overflow-hidden">
 	<!-- Sidebar desktop: docked, bisa dilipat jadi rail -->
 	<aside
-		class={`hidden shrink-0 flex-col border-r border-line bg-surface md:flex ${efektifPanel ? 'w-[320px]' : 'w-14'}`}
+		class={`relative hidden shrink-0 flex-col border-r border-line bg-surface md:flex ${efektifPanel ? '' : 'w-14'}`}
+		style:width={efektifPanel ? `${lebarSidebar}px` : undefined}
 		aria-label="Panel kontrol peta"
 	>
+		{#if efektifPanel}
+			<!-- Pegangan tarik lebar; klik dua kali mengembalikan lebar awal -->
+			<div
+				class={`absolute top-0 -right-[3px] z-20 h-full w-[6px] cursor-col-resize transition-colors hover:bg-accent/40 ${menarik ? 'bg-accent/60' : ''}`}
+				role="separator"
+				aria-orientation="vertical"
+				aria-label="Ubah lebar panel"
+				onpointerdown={mulaiTarik}
+				ondblclick={() => (lebarSidebar = 320)}
+			></div>
+		{/if}
 		<nav
 			class={`flex ${efektifPanel ? 'items-center gap-1 border-b border-line px-2 py-2' : 'flex-col items-center gap-1 py-2'}`}
 			aria-label="Kontrol peta"
@@ -147,7 +185,7 @@
 		{/if}
 
 		<!-- Ponsel: pencarian mengambang di atas peta -->
-		<div class="absolute top-3 right-3 left-3 z-10 md:hidden">
+		<div class="absolute top-3 right-14 left-3 z-10 md:hidden">
 			<SearchBox testid={tampilAside ? undefined : 'search'} />
 		</div>
 

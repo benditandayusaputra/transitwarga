@@ -4,6 +4,18 @@
 	import { TIPOLOGI_COLORS, TIPOLOGI_LABELS } from '$lib/map/layers';
 	import { formatAngka, formatPersen } from '$lib/utils/format';
 	import type { AgregatPayload } from '$lib/types';
+	import type { Component } from 'svelte';
+	import Bot from '@lucide/svelte/icons/bot';
+	import Database from '@lucide/svelte/icons/database';
+	import EyeOff from '@lucide/svelte/icons/eye-off';
+	import Footprints from '@lucide/svelte/icons/footprints';
+	import Gauge from '@lucide/svelte/icons/gauge';
+	import MapPinned from '@lucide/svelte/icons/map-pinned';
+	import QrCode from '@lucide/svelte/icons/qr-code';
+	import Radius from '@lucide/svelte/icons/radius';
+	import Store from '@lucide/svelte/icons/store';
+	import TrainFront from '@lucide/svelte/icons/train-front';
+	import Smartphone from '@lucide/svelte/icons/smartphone';
 
 	let agregat = $state<AgregatPayload | null>(null);
 	let gagal = $state(false);
@@ -29,20 +41,24 @@
 		[...(agregat?.kawasan ?? [])].sort((a, b) => b.skor_friksi - a.skor_friksi).slice(0, 6)
 	);
 
-	const langkah = [
+	const langkah: { judul: string; isi: string; ikon: Component<{ size?: number }> }[] = [
 		{
+			ikon: Database,
 			judul: 'Data lapangan',
 			isi: 'Menu Go dan Struk Go dari MAPID, ditambah observasi tim Devunder di koridor MRT.'
 		},
 		{
+			ikon: Radius,
 			judul: 'Analisis spasial',
 			isi: 'Buffer 400 dan 800 meter dari tiap stasiun, spatial join seluruh titik usaha dan transaksi.'
 		},
 		{
+			ikon: Gauge,
 			judul: 'Empat skor, lima tipologi',
 			isi: 'Kepadatan, keramaian, inklusi digital, dan friksi trotoar menentukan tipologi kawasan.'
 		},
 		{
+			ikon: Bot,
 			judul: 'Asisten yang membaca peta',
 			isi: 'AI merangkum angka menjadi kalimat dan menunjuk kawasan yang dimaksud langsung di peta.'
 		}
@@ -87,25 +103,31 @@
 			>
 				{#if insight}
 					<div>
-						<dt class="label">Kawasan dianalisis</dt>
+						<dt class="label inline-flex items-center gap-1.5">
+							<TrainFront size={13} /> Kawasan
+						</dt>
 						<dd class="num mt-1 text-2xl">
 							<AngkaNaik nilai={insight.kawasan} format={formatAngka} />
 						</dd>
 					</div>
 					<div>
-						<dt class="label">Titik usaha</dt>
+						<dt class="label inline-flex items-center gap-1.5"><Store size={13} /> Titik usaha</dt>
 						<dd class="num mt-1 text-2xl">
 							<AngkaNaik nilai={insight.totalUsaha} format={formatAngka} />
 						</dd>
 					</div>
 					<div>
-						<dt class="label">Transaksi digital</dt>
+						<dt class="label inline-flex items-center gap-1.5">
+							<QrCode size={13} /> Transaksi digital
+						</dt>
 						<dd class="num mt-1 text-2xl">
 							<AngkaNaik nilai={insight.rataDigital} format={formatPersen} />
 						</dd>
 					</div>
 					<div>
-						<dt class="label">Perlu penataan</dt>
+						<dt class="label inline-flex items-center gap-1.5">
+							<Footprints size={13} /> Perlu penataan
+						</dt>
 						<dd class="num mt-1 text-2xl">
 							<AngkaNaik nilai={insight.perluPenataan} format={formatAngka} />
 						</dd>
@@ -186,6 +208,10 @@
 		</div>
 		<div class="grid gap-8 sm:grid-cols-3">
 			<div>
+				<span
+					class="mb-3 grid h-9 w-9 place-items-center rounded-[8px] bg-accent-soft text-accent-2"
+					><EyeOff size={17} /></span
+				>
 				<h3 class="font-semibold text-ink">Tidak terlihat di peta kebijakan</h3>
 				<p class="mt-2 text-sm leading-6 text-ink-2">
 					Pedagang informal melayani ribuan penglaju setiap hari tetapi jarang masuk basis data
@@ -193,6 +219,9 @@
 				</p>
 			</div>
 			<div>
+				<span class="mb-3 grid h-9 w-9 place-items-center rounded-[8px] bg-signal-soft text-signal"
+					><Footprints size={17} /></span
+				>
 				<h3 class="font-semibold text-ink">Friksi di jalur pejalan kaki</h3>
 				<p class="mt-2 text-sm leading-6 text-ink-2">
 					Di beberapa kawasan, lapak menempati trotoar sempit sehingga penglaju berjalan memutar
@@ -200,6 +229,9 @@
 				</p>
 			</div>
 			<div>
+				<span class="mb-3 grid h-9 w-9 place-items-center rounded-[8px] bg-ok-soft text-ok"
+					><Smartphone size={17} /></span
+				>
 				<h3 class="font-semibold text-ink">Kesenjangan pembayaran digital</h3>
 				<p class="mt-2 text-sm leading-6 text-ink-2">
 					Sebagian pedagang sudah menerima QRIS, sebagian masih tunai sepenuhnya. Program
@@ -216,14 +248,18 @@
 		<ol class="mt-8 grid gap-6 md:grid-cols-4">
 			{#each langkah as l, i (l.judul)}
 				<li class="border-t-2 border-ink pt-4">
-					<span class="num text-sm text-muted">Langkah {i + 1}</span>
+					<div class="flex items-center justify-between">
+						<span class="num text-sm text-muted">Langkah {i + 1}</span>
+						<span class="text-ink-2"><l.ikon size={18} /></span>
+					</div>
 					<h3 class="mt-1 font-semibold text-ink">{l.judul}</h3>
 					<p class="mt-2 text-sm leading-6 text-ink-2">{l.isi}</p>
 				</li>
 			{/each}
 		</ol>
 		<div class="mt-10 flex flex-wrap gap-2.5">
-			<a href="/rekomendasi" class="btn">Rekomendasi per tipologi</a>
+			<a href="/rekomendasi" class="btn gap-1.5"><MapPinned size={15} /> Rekomendasi per tipologi</a
+			>
 			<a href="/metodologi" class="btn btn-ghost">Metodologi dan sumber data</a>
 		</div>
 	</div>

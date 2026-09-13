@@ -2,7 +2,6 @@
 	import '../app.css';
 	import type { Snippet } from 'svelte';
 	import { navigating, page } from '$app/state';
-	import BottomNav from '$lib/components/BottomNav.svelte';
 	import MapPinned from '@lucide/svelte/icons/map-pinned';
 	import Menu from '@lucide/svelte/icons/menu';
 	import X from '@lucide/svelte/icons/x';
@@ -103,12 +102,12 @@
 		{/if}
 	</header>
 
-	<main id="konten-utama" class={diPeta ? 'flex-1' : 'flex-1 pb-20 md:pb-0'}>
+	<main id="konten-utama" class="flex-1">
 		{@render children()}
 	</main>
 
 	{#if !diPeta}
-		<footer class="hidden border-t border-line bg-surface md:block">
+		<footer class="border-t border-line bg-surface">
 			<div
 				class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-6 py-5 text-[12.5px] text-muted"
 			>
@@ -117,6 +116,4 @@
 			</div>
 		</footer>
 	{/if}
-
-	<BottomNav />
 </div>

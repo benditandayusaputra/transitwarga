@@ -6,13 +6,18 @@
 	import Check from '@lucide/svelte/icons/check';
 	import Copy from '@lucide/svelte/icons/copy';
 	import MapPinned from '@lucide/svelte/icons/map-pinned';
+	import HandCoins from '@lucide/svelte/icons/hand-coins';
+	import Landmark from '@lucide/svelte/icons/landmark';
+	import TrainFront from '@lucide/svelte/icons/train-front';
+	import Users from '@lucide/svelte/icons/users';
+	import type { Component } from 'svelte';
 
 	type Pihak = 'pemda' | 'operator' | 'pedagang' | 'digital';
-	const PIHAK: { id: Pihak; label: string }[] = [
-		{ id: 'pemda', label: 'Pemerintah daerah' },
-		{ id: 'operator', label: 'Operator transit' },
-		{ id: 'pedagang', label: 'Pedagang dan komunitas' },
-		{ id: 'digital', label: 'Program pembayaran digital' }
+	const PIHAK: { id: Pihak; label: string; ikon: Component<{ size?: number }> }[] = [
+		{ id: 'pemda', label: 'Pemerintah daerah', ikon: Landmark },
+		{ id: 'operator', label: 'Operator transit', ikon: TrainFront },
+		{ id: 'pedagang', label: 'Pedagang dan komunitas', ikon: Users },
+		{ id: 'digital', label: 'Program pembayaran digital', ikon: HandCoins }
 	];
 
 	interface Rekomendasi {

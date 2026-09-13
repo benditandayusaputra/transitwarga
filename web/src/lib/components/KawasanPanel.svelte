@@ -11,6 +11,9 @@
 	import Maximize2 from '@lucide/svelte/icons/maximize-2';
 	import Minimize2 from '@lucide/svelte/icons/minimize-2';
 	import X from '@lucide/svelte/icons/x';
+	import Banknote from '@lucide/svelte/icons/banknote';
+	import QrCode from '@lucide/svelte/icons/qr-code';
+	import Store from '@lucide/svelte/icons/store';
 
 	let agregat = $state<AgregatPayload | null>(null);
 
@@ -60,19 +63,19 @@
 	{#if stats}
 		<dl class={`mt-4 grid gap-2 ${lebar ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2'}`}>
 			<div class="rounded-[8px] border border-line px-3 py-2.5">
-				<dt class="label">Usaha dalam 400 m</dt>
+				<dt class="label flex items-center gap-1"><Store size={12} /> Usaha dalam 400 m</dt>
 				<dd class="num text-lg"><AngkaNaik nilai={stats.n_usaha_400} /></dd>
 			</div>
 			<div class="rounded-[8px] border border-line px-3 py-2.5">
-				<dt class="label">Usaha dalam 800 m</dt>
+				<dt class="label flex items-center gap-1"><Store size={12} /> Usaha dalam 800 m</dt>
 				<dd class="num text-lg"><AngkaNaik nilai={stats.n_usaha_800} /></dd>
 			</div>
 			<div class="rounded-[8px] border border-line px-3 py-2.5">
-				<dt class="label">Harga median</dt>
+				<dt class="label flex items-center gap-1"><Banknote size={12} /> Harga median</dt>
 				<dd class="num text-lg"><AngkaNaik nilai={stats.harga_median} format={formatRupiah} /></dd>
 			</div>
 			<div class="rounded-[8px] border border-line px-3 py-2.5">
-				<dt class="label">Transaksi digital</dt>
+				<dt class="label flex items-center gap-1"><QrCode size={12} /> Transaksi digital</dt>
 				<dd class="num text-lg"><AngkaNaik nilai={stats.pct_digital} format={formatPersen} /></dd>
 			</div>
 		</dl>

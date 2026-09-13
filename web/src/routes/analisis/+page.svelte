@@ -28,6 +28,11 @@
 	import type { AgregatPayload } from '$lib/types';
 	import CircleAlert from '@lucide/svelte/icons/circle-alert';
 	import MapPinned from '@lucide/svelte/icons/map-pinned';
+	import Banknote from '@lucide/svelte/icons/banknote';
+	import QrCode from '@lucide/svelte/icons/qr-code';
+	import Receipt from '@lucide/svelte/icons/receipt';
+	import Store from '@lucide/svelte/icons/store';
+	import type { Component } from 'svelte';
 
 	const METODE_COLORS: Record<string, string> = {
 		tunai: '#94a3b8',
@@ -105,10 +110,30 @@
 	const kartu = $derived(
 		indikator
 			? [
-					{ label: 'Usaha informal dalam 800 m', nilai: indikator.nUsaha, format: formatAngka },
-					{ label: 'Harga median per porsi', nilai: indikator.hargaMedian, format: formatRupiah },
-					{ label: 'Transaksi non-tunai', nilai: indikator.pctDigital, format: formatPersen },
-					{ label: 'Transaksi tercatat', nilai: indikator.nTransaksi, format: formatAngka }
+					{
+						label: 'Usaha informal dalam 800 m',
+						nilai: indikator.nUsaha,
+						format: formatAngka,
+						ikon: Store as Component<{ size?: number }>
+					},
+					{
+						label: 'Harga median per porsi',
+						nilai: indikator.hargaMedian,
+						format: formatRupiah,
+						ikon: Banknote as Component<{ size?: number }>
+					},
+					{
+						label: 'Transaksi non-tunai',
+						nilai: indikator.pctDigital,
+						format: formatPersen,
+						ikon: QrCode as Component<{ size?: number }>
+					},
+					{
+						label: 'Transaksi tercatat',
+						nilai: indikator.nTransaksi,
+						format: formatAngka,
+						ikon: Receipt as Component<{ size?: number }>
+					}
 				]
 			: []
 	);
@@ -226,7 +251,7 @@
 		{:else}
 			{#each kartu as item (item.label)}
 				<div class="card p-4" aria-busy={memuat}>
-					<dt class="label">{item.label}</dt>
+					<dt class="label flex items-center gap-1.5"><item.ikon size={13} /> {item.label}</dt>
 					<dd class="num mt-1.5 text-[22px]">
 						<AngkaNaik nilai={item.nilai} format={item.format} />
 					</dd>

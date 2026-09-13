@@ -10,6 +10,8 @@
 	import type { AgregatKawasan } from '$lib/types';
 	import TurnstileWidget from './TurnstileWidget.svelte';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import Maximize2 from '@lucide/svelte/icons/maximize-2';
+	import Minimize2 from '@lucide/svelte/icons/minimize-2';
 	import Send from '@lucide/svelte/icons/send';
 	import Sparkles from '@lucide/svelte/icons/sparkles';
 	import X from '@lucide/svelte/icons/x';
@@ -18,6 +20,14 @@
 	let knownIds = new Set<string>();
 	let daftarKawasan = $state<AgregatKawasan[]>([]);
 	let daftarEl = $state<HTMLElement | null>(null);
+
+	/** Mode layar penuh (ponsel dan desktop). */
+	let penuh = $state(false);
+	/** Ukuran kartu di desktop; diubah dengan menarik tepi seperti jendela aplikasi. */
+	let lebar = $state(380);
+	let tinggi = $state(460);
+	const LEBAR = [320, 820] as const;
+	const TINGGI = [320, 900] as const;
 
 	$effect(() => {
 		loadAgregat()
@@ -28,9 +38,8 @@
 			.catch(() => (knownIds = new Set()));
 	});
 
-	const terbuka = $derived(
-		mapStore.asistenTerbuka ?? (browser && window.matchMedia('(min-width: 768px)').matches)
-	);
+	const desktop = $derived(browser && window.matchMedia('(min-width: 768px)').matches);
+	const terbuka = $derived(mapStore.asistenTerbuka ?? desktop);
 
 	const kawasanAktif = $derived(
 		daftarKawasan.find((k) => k.kawasan_id === mapStore.kawasanAktif) ?? null
@@ -48,7 +57,6 @@
 		'Bandingkan Blok M dengan Senayan'
 	];
 
-	// Gulir ke pesan terbaru saat ada perubahan.
 	$effect(() => {
 		void chatStore.messages.length;
 		void chatStore.streamingText;
@@ -91,15 +99,78 @@
 		e.preventDefault();
 		void kirimTeks(input.trim());
 	}
+
+	function tutup() {
+		mapStore.asistenTerbuka = false;
+		penuh = false;
+	}
+
+	function jepit(n: number, [min, max]: readonly [number, number]) {
+		return Math.min(max, Math.max(min, n));
+	}
+
+	/**
+	 * Tarik tepi kiri, atas, atau sudut kiri-atas untuk mengubah ukuran. Kartu
+	 * menempel di kanan-bawah, jadi geser ke kiri/atas memperbesar.
+	 */
+	function mulaiResize(arah: 'kiri' | 'atas' | 'sudut') {
+		return (e: PointerEvent) => {
+			e.preventDefault();
+			const awalX = e.clientX;
+			const awalY = e.clientY;
+			const lebarAwal = lebar;
+			const tinggiAwal = tinggi;
+			const el = e.currentTarget as HTMLElement;
+			el.setPointerCapture(e.pointerId);
+			const gerak = (ev: PointerEvent) => {
+				if (arah !== 'atas') lebar = jepit(lebarAwal + (awalX - ev.clientX), LEBAR);
+				if (arah !== 'kiri') tinggi = jepit(tinggiAwal + (awalY - ev.clientY), TINGGI);
+			};
+			const selesai = () => {
+				el.removeEventListener('pointermove', gerak);
+				el.removeEventListener('pointerup', selesai);
+				el.removeEventListener('pointercancel', selesai);
+			};
+			el.addEventListener('pointermove', gerak);
+			el.addEventListener('pointerup', selesai);
+			el.addEventListener('pointercancel', selesai);
+		};
+	}
+
+	const kelasKartu = $derived(
+		penuh
+			? 'fixed inset-0 z-50 rounded-none'
+			: 'fixed inset-x-0 bottom-14 z-40 max-h-[66dvh] rounded-b-none md:absolute md:inset-x-auto md:right-3 md:bottom-8 md:z-30 md:max-h-[calc(100%-4rem)] md:rounded-[var(--radius-panel)]'
+	);
 </script>
 
 {#if terbuka}
 	<section
-		class="panel-float fixed inset-x-0 bottom-14 z-40 flex max-h-[66dvh] flex-col rounded-b-none md:absolute md:inset-x-auto md:right-3 md:bottom-8 md:z-30 md:h-[460px] md:max-h-[calc(100%-4rem)] md:w-[380px] md:rounded-[var(--radius-panel)]"
+		class={`panel-float flex flex-col ${kelasKartu}`}
+		style:width={penuh || !desktop ? undefined : `${lebar}px`}
+		style:height={penuh || !desktop ? undefined : `${tinggi}px`}
 		transition:masukSheet
 		aria-label="Asisten kebijakan"
 		data-testid="asisten-dock"
 	>
+		{#if desktop && !penuh}
+			<div
+				class="absolute top-0 bottom-0 -left-1 w-2 cursor-ew-resize"
+				onpointerdown={mulaiResize('kiri')}
+				aria-hidden="true"
+			></div>
+			<div
+				class="absolute -top-1 right-0 left-0 h-2 cursor-ns-resize"
+				onpointerdown={mulaiResize('atas')}
+				aria-hidden="true"
+			></div>
+			<div
+				class="absolute -top-1.5 -left-1.5 z-10 h-4 w-4 cursor-nwse-resize"
+				onpointerdown={mulaiResize('sudut')}
+				aria-hidden="true"
+			></div>
+		{/if}
+
 		<header class="flex items-center gap-2.5 border-b border-line px-3.5 py-2.5">
 			<span class="grid h-7 w-7 place-items-center rounded-[6px] bg-accent-soft text-accent-2">
 				<Sparkles size={15} />
@@ -114,8 +185,18 @@
 			<button
 				type="button"
 				class="btn btn-ghost btn-sm h-8 w-8 px-0"
+				aria-label={penuh ? 'Keluar dari layar penuh' : 'Layar penuh'}
+				aria-pressed={penuh}
+				onclick={() => (penuh = !penuh)}
+				data-testid="asisten-penuh"
+			>
+				{#if penuh}<Minimize2 size={15} />{:else}<Maximize2 size={15} />{/if}
+			</button>
+			<button
+				type="button"
+				class="btn btn-ghost btn-sm h-8 w-8 px-0"
 				aria-label="Tutup asisten"
-				onclick={() => (mapStore.asistenTerbuka = false)}
+				onclick={tutup}
 				data-testid="asisten-toggle"
 			>
 				<X size={16} />
@@ -123,7 +204,7 @@
 		</header>
 
 		<ul
-			class="min-h-0 flex-1 space-y-2.5 overflow-y-auto px-3.5 py-3"
+			class={`min-h-0 flex-1 space-y-2.5 overflow-y-auto px-3.5 py-3 ${penuh ? 'mx-auto w-full max-w-3xl' : ''}`}
 			data-testid="chat-messages"
 			bind:this={daftarEl}
 		>
@@ -137,10 +218,8 @@
 						<button
 							type="button"
 							class="chip h-auto py-1.5 text-left whitespace-normal"
-							onclick={() => void kirimTeks(c)}
+							onclick={() => void kirimTeks(c)}>{c}</button
 						>
-							{c}
-						</button>
 					{/each}
 				</li>
 			{/if}
@@ -181,7 +260,7 @@
 			{/if}
 		</ul>
 
-		<div class="border-t border-line px-3.5 py-2.5">
+		<div class={`border-t border-line px-3.5 py-2.5 ${penuh ? 'mx-auto w-full max-w-3xl' : ''}`}>
 			{#if chatStore.error}
 				<p class="mb-2 text-[12.5px] text-signal" data-testid="chat-error">{chatStore.error}</p>
 			{/if}

@@ -11,6 +11,9 @@
 	import ChevronLeft from '@lucide/svelte/icons/chevron-left';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import Image from '@lucide/svelte/icons/image';
+	import Images from '@lucide/svelte/icons/images';
+	import MapPin from '@lucide/svelte/icons/map-pin';
+	import UserRound from '@lucide/svelte/icons/user-round';
 	import MapPinned from '@lucide/svelte/icons/map-pinned';
 	import RefreshCw from '@lucide/svelte/icons/refresh-cw';
 	import Search from '@lucide/svelte/icons/search';
@@ -158,7 +161,7 @@
 
 	<dl class="masuk mt-6 grid grid-cols-3 gap-3" style="--i: 1" aria-live="polite">
 		<div class="card p-4">
-			<dt class="label">Titik observasi</dt>
+			<dt class="label flex items-center gap-1.5"><MapPin size={13} /> Titik observasi</dt>
 			<dd class="num mt-1 text-[22px]">
 				{#if loading}<span class="shimmer inline-block h-6 w-12"></span>{:else}<AngkaNaik
 						nilai={stats.totalTitik}
@@ -166,7 +169,7 @@
 			</dd>
 		</div>
 		<div class="card p-4">
-			<dt class="label">Foto lapangan</dt>
+			<dt class="label flex items-center gap-1.5"><Images size={13} /> Foto lapangan</dt>
 			<dd class="num mt-1 text-[22px]">
 				{#if loading}<span class="shimmer inline-block h-6 w-12"></span>{:else}<AngkaNaik
 						nilai={stats.totalFoto}
@@ -174,7 +177,7 @@
 			</dd>
 		</div>
 		<div class="card p-4">
-			<dt class="label">Surveyor</dt>
+			<dt class="label flex items-center gap-1.5"><UserRound size={13} /> Surveyor</dt>
 			<dd class="num mt-1 text-[22px]">
 				{#if loading}<span class="shimmer inline-block h-6 w-12"></span>{:else}<AngkaNaik
 						nilai={stats.totalSurveyor}

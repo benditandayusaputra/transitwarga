@@ -1,6 +1,12 @@
 <script lang="ts">
 	import { apiBase } from '$lib/ai/api';
 	import { onMount } from 'svelte';
+	import type { Component } from 'svelte';
+	import Bot from '@lucide/svelte/icons/bot';
+	import Database from '@lucide/svelte/icons/database';
+	import Gauge from '@lucide/svelte/icons/gauge';
+	import ShieldCheck from '@lucide/svelte/icons/shield-check';
+	import Waypoints from '@lucide/svelte/icons/waypoints';
 
 	interface HealthInfo {
 		data_version: string;
@@ -20,12 +26,12 @@
 		}
 	});
 
-	const bagian = [
-		{ id: 'sumber-data', label: 'Sumber data' },
-		{ id: 'pipeline', label: 'Pengolahan data' },
-		{ id: 'metode', label: 'Skor dan tipologi' },
-		{ id: 'ai', label: 'Penggunaan AI' },
-		{ id: 'batasan', label: 'Batasan' }
+	const bagian: { id: string; label: string; ikon: Component<{ size?: number }> }[] = [
+		{ id: 'sumber-data', label: 'Sumber data', ikon: Database },
+		{ id: 'pipeline', label: 'Pengolahan data', ikon: Waypoints },
+		{ id: 'metode', label: 'Skor dan tipologi', ikon: Gauge },
+		{ id: 'ai', label: 'Penggunaan AI', ikon: Bot },
+		{ id: 'batasan', label: 'Batasan', ikon: ShieldCheck }
 	];
 	const PROVIDER: Record<string, string> = {
 		google: 'Google Gemini',
@@ -97,7 +103,14 @@
 				style="--i: 2"
 				aria-labelledby="h-sumber"
 			>
-				<h2 id="h-sumber" class="text-xl font-semibold tracking-tight text-ink">Sumber data</h2>
+				<h2
+					id="h-sumber"
+					class="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-ink"
+				>
+					<span class="grid h-8 w-8 place-items-center rounded-[8px] bg-accent-soft text-accent-2"
+						><Database size={16} /></span
+					>Sumber data
+				</h2>
 				<table class="mt-3 w-full text-left text-[14px]">
 					<thead class="text-[12.5px] text-muted"
 						><tr
@@ -214,7 +227,14 @@
 			</section>
 
 			<section id="ai" class="masuk scroll-mt-20" style="--i: 5" aria-labelledby="h-ai">
-				<h2 id="h-ai" class="text-xl font-semibold tracking-tight text-ink">Penggunaan AI</h2>
+				<h2
+					id="h-ai"
+					class="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-ink"
+				>
+					<span class="grid h-8 w-8 place-items-center rounded-[8px] bg-accent-soft text-accent-2"
+						><Bot size={16} /></span
+					>Penggunaan AI
+				</h2>
 				<dl class="mt-3 space-y-3">
 					<div>
 						<dt class="font-semibold text-ink">Masukan</dt>
@@ -252,7 +272,14 @@
 			</section>
 
 			<section id="batasan" class="masuk scroll-mt-20" style="--i: 6" aria-labelledby="h-batasan">
-				<h2 id="h-batasan" class="text-xl font-semibold tracking-tight text-ink">Batasan</h2>
+				<h2
+					id="h-batasan"
+					class="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-ink"
+				>
+					<span class="grid h-8 w-8 place-items-center rounded-[8px] bg-accent-soft text-accent-2"
+						><ShieldCheck size={16} /></span
+					>Batasan
+				</h2>
 				<ul class="mt-3 space-y-2">
 					<li>
 						Sampel data tahap awal masih kecil dan tidak merata antar kawasan; skor dinormalisasi
